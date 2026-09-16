@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { CircuitBoard, Cpu, HardDrive, Keyboard, LayoutGrid, MemoryStick, Monitor, Package, UserRound, Plus } from 'lucide-react'
+import { CircuitBoard, Cpu, HardDrive, Keyboard, LayoutGrid, MemoryStick, Monitor, Package, UserRound, Plus, Zap } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import wordmark from '../assets/bytesaver-wordmark-primary.png'
 import './MarketplacePage.css'
 
-const fallbackCategories = ['All hardware', 'CPU', 'GPU', 'RAM', 'Motherboard', 'Storage', 'Monitor', 'Peripherals']
+const fallbackCategories = ['All hardware', 'CPU', 'GPU', 'RAM', 'Motherboard', 'Storage', 'Power Supply', 'Monitor', 'Peripherals']
 
 const previewListings = [
   { id: 'preview-1', title: 'Ryzen 5 5600X', category_name: 'CPU', price: 5850, condition: 'Excellent condition' },
@@ -13,6 +13,7 @@ const previewListings = [
   { id: 'preview-4', title: 'AOC 24G2 24-inch 144Hz', category_name: 'Monitor', price: 7200, condition: 'Lightly used' },
   { id: 'preview-5', title: 'Samsung 970 EVO Plus 1TB', category_name: 'Storage', price: 3950, condition: 'Healthy drive' },
   { id: 'preview-6', title: 'Keychron K2 Mechanical Keyboard', category_name: 'Peripherals', price: 3100, condition: 'Excellent condition' },
+  { id: 'preview-7', title: 'Corsair RM750e 750W Gold', category_name: 'Power Supply', price: 5250, condition: 'Fully tested' },
 ]
 
 const categoryIcons = {
@@ -22,6 +23,7 @@ const categoryIcons = {
   RAM: MemoryStick,
   Motherboard: CircuitBoard,
   Storage: HardDrive,
+  'Power Supply': Zap,
   Monitor,
   Peripherals: Keyboard,
 }
