@@ -1,0 +1,7 @@
+.signed-in-shell { min-height: 100svh; display: grid; place-items: center; padding: 24px; background: #07100e; }
+.signed-in-panel { width: min(100%, 580px); padding: 52px; border: 1px solid rgba(155, 181, 167, .18); background: rgba(10, 17, 18, .9); box-shadow: 0 24px 80px rgba(0, 0, 0, .34); }
+.section-index { display: block; margin-bottom: 18px; color: #6aff83; font: 500 10px 'DM Mono', monospace; letter-spacing: .14em; }
+.signed-in-panel h1 { margin: 18px 0 14px; color: #f2f6f4; font: 600 clamp(38px, 5vw, 52px)/.98 'Barlow Condensed', sans-serif; }
+.signed-in-panel p { margin: 0 0 32px; color: #84948c; font-size: 14px; line-height: 1.7; }
+.submit-button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 16px 18px; border: 1px solid #6aff83; border-radius: 0; background: #6aff83; color: #07100e; cursor: pointer; font: 700 12px 'DM Mono', monospace; letter-spacing: .1em; }
+.submit-button span { font-size: 20px; line-height: 0; }
