@@ -15,8 +15,9 @@
 .profile-trigger { position: relative; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid rgba(106, 255, 131, .45); border-radius: 50%; background: rgba(106, 255, 131, .08); color: #6aff83; cursor: pointer; transition: color .2s, background .2s, border-color .2s, transform .2s, box-shadow .2s; }
 .profile-trigger::before { position: absolute; inset: 3px; border: 1px solid rgba(106, 255, 131, .18); border-radius: 50%; content: ''; }
 .profile-trigger:hover, .profile-trigger.open { border-color: #6aff83; background: #6aff83; color: #07100e; box-shadow: 0 0 0 5px rgba(106, 255, 131, .08), 0 8px 22px rgba(106, 255, 131, .14); transform: translateY(-1px); }
-.profile-trigger-icon { position: relative; z-index: 1; display: grid; place-items: center; }
+.profile-trigger-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 100%; height: 100%; overflow: hidden; border-radius: 50%; }
 .profile-trigger-icon svg { width: 16px; height: 16px; }
+.profile-trigger-icon img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .online-dot { position: absolute; right: -1px; bottom: 1px; z-index: 2; display: block; width: 8px; height: 8px; border: 2px solid #091310; border-radius: 50%; background: #6aff83; box-shadow: 0 0 10px #6aff83; }
 .user-copy { display: grid; gap: 3px; }
 .user-copy small { color: #52635a; font-size: 7px; letter-spacing: .08em; }
@@ -24,7 +25,8 @@
 .marketplace-user.open .user-arrow { transform: rotate(180deg); }
 .account-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 246px; padding: 12px; border: 1px solid rgba(106, 255, 131, .24); border-radius: 10px; background: #0b1713; box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
 .account-summary { display: flex; align-items: center; gap: 10px; padding: 6px 5px 10px; }
-.account-avatar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid rgba(106, 255, 131, .44); border-radius: 8px; background: rgba(106, 255, 131, .1); color: #6aff83; font: 600 13px Manrope, sans-serif; }
+.account-avatar { display: grid; place-items: center; width: 32px; height: 32px; overflow: hidden; border: 1px solid rgba(106, 255, 131, .44); border-radius: 8px; background: rgba(106, 255, 131, .1); color: #6aff83; font: 600 13px Manrope, sans-serif; }
+.account-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .account-summary span:last-child { display: grid; gap: 4px; min-width: 0; }
 .account-summary strong { overflow: hidden; color: #e9f0ed; font: 600 12px Manrope, sans-serif; text-overflow: ellipsis; white-space: nowrap; }
 .account-summary small { overflow: hidden; color: #6d8877; font: 9px 'DM Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
