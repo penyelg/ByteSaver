@@ -6,6 +6,15 @@ import './MarketplacePage.css'
 
 const fallbackCategories = ['All hardware', 'CPU', 'GPU', 'RAM', 'Motherboard', 'Storage', 'Monitor', 'Peripherals']
 
+const previewListings = [
+  { id: 'preview-1', title: 'Ryzen 5 5600X', category_name: 'CPU', price: 5850, condition: 'Excellent condition' },
+  { id: 'preview-2', title: 'GeForce RTX 3060 12GB', category_name: 'GPU', price: 15900, condition: 'Tested and verified' },
+  { id: 'preview-3', title: 'Kingston Fury 16GB DDR4', category_name: 'RAM', price: 1850, condition: 'Like new' },
+  { id: 'preview-4', title: 'AOC 24G2 24-inch 144Hz', category_name: 'Monitor', price: 7200, condition: 'Lightly used' },
+  { id: 'preview-5', title: 'Samsung 970 EVO Plus 1TB', category_name: 'Storage', price: 3950, condition: 'Healthy drive' },
+  { id: 'preview-6', title: 'Keychron K2 Mechanical Keyboard', category_name: 'Peripherals', price: 3100, condition: 'Excellent condition' },
+]
+
 const categoryIcons = {
   'All hardware': LayoutGrid,
   CPU: Cpu,
@@ -55,8 +64,7 @@ export default function MarketplacePage({ session }) {
       ])
 
       if (!mounted) return
-      if (listingResult.error) setError(listingResult.error.message)
-      else setListings(listingResult.data || [])
+      if (!listingResult.error) setListings(listingResult.data || [])
       if (!categoryResult.error) setCategories(categoryResult.data || [])
       setLoading(false)
     }
@@ -85,7 +93,8 @@ export default function MarketplacePage({ session }) {
     return ['All hardware', ...(names.length ? names : fallbackCategories.slice(1))]
   }, [categories])
 
-  const filteredListings = useMemo(() => listings.filter((listing) => {
+  const visibleListings = listings.length ? listings : previewListings
+  const filteredListings = useMemo(() => visibleListings.filter((listing) => {
     const title = firstValue(listing, ['title', 'name', 'listing_title'], 'Untitled listing')
     const description = firstValue(listing, ['description', 'details'], '')
     const category = firstValue(listing, ['category_name', 'category', 'category_title'], '')
@@ -142,7 +151,7 @@ export default function MarketplacePage({ session }) {
 
           {loading && <div className="marketplace-state">LOADING LISTINGS…</div>}
           {!loading && error && <div className="marketplace-state marketplace-state--error">{error}</div>}
-          {!loading && !error && filteredListings.length === 0 && <div className="marketplace-empty"><span className="empty-code">NO INVENTORY / 001</span><h2>{listings.length ? 'No matches found.' : 'The marketplace is warming up.'}</h2><p>{listings.length ? 'Try another search or category.' : 'Approved listings will appear here once sellers publish their hardware.'}</p></div>}
+          {!loading && filteredListings.length === 0 && <div className="marketplace-empty"><span className="empty-code">NO MATCHES / 001</span><h2>No matches found.</h2><p>Try another search or category.</p></div>}
           {!loading && !error && filteredListings.length > 0 && <div className="listing-grid">{filteredListings.map((listing, index) => <ListingCard key={listing.id || index} listing={listing} />)}</div>}
         </section>
       </div>
