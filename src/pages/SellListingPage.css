@@ -1,0 +1,10 @@
+.sell-page { min-height: 100svh; padding: 36px 6vw 72px; background: #07100e; color: #e9f0ed; }
+.back-button { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; color: #6aff83; cursor: pointer; font: 10px 'DM Mono', monospace; }
+.back-button svg { width: 16px; }
+.sell-page-panel { width: min(820px, 100%); margin: 48px auto 0; padding: clamp(24px, 5vw, 56px); border: 1px solid #2a3a31; background: linear-gradient(145deg, rgba(106, 255, 131, .06), #0a1512 45%); }
+.sell-page-panel h1 { margin: 10px 0 8px; font-size: clamp(34px, 6vw, 64px); }
+.sell-page-panel > p { color: #82948a; }
+.sell-page-panel .listing-form { margin-top: 34px; }
+.sell-page-panel .sell-notice { margin-bottom: 24px; }
+.sell-notice--error { border-color: #ff8277; color: #ffb9b2; }
+.sell-page-panel .image-preview { margin-top: 0; }

@@ -1,0 +1,18 @@
+.details-page { min-height: 100svh; padding: 36px 6vw 72px; background: #07100e; color: #e9f0ed; }
+.details-page .back-button { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; color: #6aff83; cursor: pointer; font: 10px 'DM Mono', monospace; }
+.details-page .back-button svg { width: 16px; }
+.details-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: clamp(32px, 7vw, 96px); width: min(1180px, 100%); margin: 56px auto 0; align-items: start; }
+.details-image { min-height: 420px; display: grid; place-items: center; overflow: hidden; border: 1px solid #2a3a31; background: #f5f5f2; color: #07100e; font: 500 42px 'DM Mono', monospace; }
+.details-image img { width: 100%; height: 100%; max-height: 620px; object-fit: contain; }
+.details-category { display: block; margin-top: 24px; color: #6aff83; font: 11px 'DM Mono', monospace; text-transform: uppercase; }
+.details-copy h1 { margin: 12px 0 20px; font-size: clamp(34px, 5vw, 62px); line-height: 1; }
+.details-price { color: #6aff83; font: 22px 'DM Mono', monospace; }
+.details-condition { color: #82948a; font: 11px 'DM Mono', monospace; text-transform: uppercase; }
+.details-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #2a3a31; }
+.details-section h2 { margin: 0 0 14px; color: #e9f0ed; font-size: 14px; }
+.details-section p { color: #aab9b0; line-height: 1.7; }
+.details-section dl { margin: 0; }
+.details-section dl div { display: flex; justify-content: space-between; gap: 20px; padding: 10px 0; border-bottom: 1px solid rgba(155, 181, 167, .1); }
+.details-section dt { color: #82948a; text-transform: capitalize; }
+.details-section dd { margin: 0; color: #e9f0ed; text-align: right; }
+@media (max-width: 800px) { .details-layout { grid-template-columns: 1fr; margin-top: 40px; } .details-image { min-height: 280px; } }
