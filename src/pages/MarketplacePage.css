@@ -56,14 +56,13 @@
 .category-list button:hover { transform: translateX(2px); }
 .category-list button:hover svg, .category-list button.active svg { color: #6aff83; }
 .filter-group { display: grid; gap: 12px; margin-top: 26px; padding-top: 26px; border-top: 1px solid #263444; }
-.filter-group label, .benchmark-filter { display: flex; align-items: center; gap: 8px; color: #c5d0dd; font: 11px 'DM Mono', monospace; line-height: 1.4; }
-.filter-group input[type="checkbox"], .benchmark-filter input[type="checkbox"] { width: 13px; height: 13px; accent-color: #00f27b; }
+.filter-group label { display: flex; align-items: center; gap: 8px; color: #c5d0dd; font: 11px 'DM Mono', monospace; line-height: 1.4; }
+.filter-group input[type="checkbox"] { width: 13px; height: 13px; accent-color: #00f27b; }
 .price-filter { display: block; position: relative; }
 .price-filter .rail-label { display: inline-block; }
 .price-filter strong { float: right; color: #00f27b; font: 700 11px 'DM Mono', monospace; }
 .price-filter input[type="range"] { width: 100%; margin: 18px 0 8px; accent-color: #00f27b; }
 .price-filter div { display: flex; justify-content: space-between; color: #68788d; font: 9px 'DM Mono', monospace; }
-.benchmark-filter { margin-top: 24px; padding-top: 20px; border-top: 1px solid #263444; }
 .marketplace-content { width: min(1180px, 100%); padding: 58px 54px 80px; margin: 0 auto; }
 .marketplace-intro { display: flex; justify-content: space-between; gap: 30px; padding: 40px; border: 1px solid #2a3a31; border-radius: 16px; background: linear-gradient(120deg, rgba(11, 23, 19, .96), rgba(10, 22, 29, .9) 65%, rgba(25, 65, 54, .8)); box-shadow: 0 24px 60px rgba(0, 0, 0, .2); }
 .intro-copy { min-width: 0; }
@@ -95,14 +94,15 @@
 .marketplace-state--error { color: #ff9b9b; border-color: #734444; }
 .marketplace-empty h2 { margin: 18px 0 10px; color: #dbe6df; font: 600 36px 'Barlow Condensed', sans-serif; text-transform: uppercase; }
 .marketplace-empty p { margin: 0; color: #82948a; font: 13px Manrope, sans-serif; }
-.listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
-.listing-card { border: 1px solid #2a3a31; background: #0a1512; transition: transform .2s, border-color .2s; }
+.listing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); align-items: stretch; gap: 16px; margin-top: 16px; }
+.listing-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid #2a3a31; background: #0a1512; transition: transform .2s, border-color .2s; }
 .listing-card:hover { transform: translateY(-3px); border-color: #6aff83; }
 .listing-image { width: 100%; aspect-ratio: 4 / 3; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle, rgba(106, 255, 131, .12), transparent 60%), #0d1916; color: #6aff83; font: 500 24px 'DM Mono', monospace; }
-.listing-image img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 0; }
-.listing-meta { padding: 16px; }
+.listing-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+.listing-image-fallback { display: grid; place-items: center; width: 64px; height: 64px; border: 1px solid rgba(106, 255, 131, .45); border-radius: 50%; color: #6aff83; font-size: 16px; }
+.listing-meta { display: flex; min-height: 148px; flex: 1; flex-direction: column; padding: 16px; }
 .listing-meta > span, .listing-meta small { display: block; color: #6d8877; font: 10px 'DM Mono', monospace; text-transform: uppercase; }
-.listing-meta strong { display: block; margin: 9px 0 6px; color: #e9f0ed; font-size: 14px; }
+.listing-meta strong { display: block; margin: 9px 0 6px; color: #e9f0ed; font-size: 14px; line-height: 1.35; }
 .listing-bottom { display: flex; align-items: end; justify-content: space-between; gap: 10px; margin-top: 18px; }
 .listing-bottom b { color: #6aff83; font: 500 15px 'DM Mono', monospace; }
 .listing-bottom button { border: 1px solid #6aff83; background: transparent; color: #6aff83; cursor: pointer; font: 9px 'DM Mono', monospace; padding: 8px; }

@@ -1,13 +1,13 @@
-import React from 'react'
-import { useSearchParams } from 'react-router-dom'
-import AuthForm from '../components/auth/AuthForm'
-import AuthModeSwitch from '../components/auth/AuthModeSwitch'
-import PixelSnow from '../components/visuals/PixelSnow'
-import './AuthPage.css'
+import React from "react";
+import { useSearchParams } from "react-router-dom";
+import AuthForm from "../components/auth/AuthForm";
+import AuthModeSwitch from "../components/auth/AuthModeSwitch";
+import PixelSnow from "../components/visuals/PixelSnow";
+import "./AuthPage.css";
 
 export default function AuthPage() {
-  const [params] = useSearchParams()
-  const mode = params.get('mode') === 'register' ? 'register' : 'login'
+  const [params] = useSearchParams();
+  const mode = params.get("mode") === "register" ? "register" : "login";
 
   return (
     <main className="auth-shell">
@@ -28,14 +28,20 @@ export default function AuthPage() {
       <section className="form-panel">
         <div className="form-wrap">
           <div className="form-heading">
-            <span className="section-index">{mode === 'login' ? '01' : '02'} / ACCOUNT</span>
-            <h1>{mode === 'login' ? 'Welcome!' : 'Create your account.'}</h1>
-            <p>{mode === 'login' ? 'Sign in to browse verified hardware and manage your listings.' : 'Join a marketplace built for better hardware decisions.'}</p>
+            <span className="section-index">
+              {mode === "login" ? "01" : "02"} / ACCOUNT
+            </span>
+            <h1>{mode === "login" ? "Welcome!" : "Create your account."}</h1>
+            <p>
+              {mode === "login"
+                ? "Sign in to browse verified hardware and manage your listings."
+                : "Join a marketplace built for better hardware decisions."}
+            </p>
           </div>
           <AuthModeSwitch mode={mode} />
           <AuthForm mode={mode} />
         </div>
       </section>
     </main>
-  )
+  );
 }

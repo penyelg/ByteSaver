@@ -47,41 +47,70 @@ const categorySpecs = {
   ],
 }
 
+// Renders the sell page and manages the form used to create a hardware listing.
 export default function SellListingPage({ session, onBack }) {
-  const [form, setForm] = useState({ brand: '', model: '', category: 'CPU', price: '', condition: 'Good', description: '', image: null })
-  const [specs, setSpecs] = useState({})
-  const [imagePreview, setImagePreview] = useState('')
-  const [notice, setNotice] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({
+    brand: "",
+    model: "",
+    category: "CPU",
+    price: "",
+    condition: "Good",
+    description: "",
+    image: null,
+  });
 
+  const [specs, setSpecs] = useState({});
+  const [imagePreview, setImagePreview] = useState("");
+  const [notice, setNotice] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  // Updates the main listing fields and creates a preview when a product image is selected.
   const updateForm = (event) => {
-    const { name, value, files } = event.target
-    if (name === 'image') {
-      const file = files?.[0] || null
-      setForm((current) => ({ ...current, image: file }))
-      setImagePreview(file ? URL.createObjectURL(file) : '')
-      return
+    const { name, value, files } = event.target;
+
+    if (name === "image") {
+      const file = files?.[0] || null;
+      setForm((current) => ({ ...current, image: file }));
+      setImagePreview(file ? URL.createObjectURL(file) : "");
+      return;
     }
-    setForm((current) => ({ ...current, [name]: value }))
-    if (name === 'category') setSpecs({})
-  }
+    
+    setForm((current) => ({ ...current, [name]: value }));
+    if (name === "category") setSpecs({});
+  };
 
+  // Updates the category-specific technical specification fields.
   const updateSpec = (event) => {
-    const { name, value } = event.target
-    setSpecs((current) => ({ ...current, [name]: value }))
-  }
+    const { name, value } = event.target;
+    setSpecs((current) => ({ ...current, [name]: value }));
+  };
 
+  // Uploads the selected image and saves the listing details to Supabase.
   const saveListing = async (event) => {
-    event.preventDefault()
-    if (!supabase) return setNotice('Supabase is not configured.')
-    setSaving(true)
+    event.preventDefault();
+    if (!supabase) return setNotice("Supabase is not configured.");
+
+    setSaving(true);
+
     try {
-      const extension = form.image.name.split('.').pop()?.toLowerCase() || 'jpg'
-      const imagePath = `${session.user.id}/${crypto.randomUUID()}.${extension}`
-      const upload = await supabase.storage.from('listing-images').upload(imagePath, form.image, { contentType: form.image.type, upsert: false })
-      if (upload.error) throw upload.error
-      const imageUrl = supabase.storage.from('listing-images').getPublicUrl(imagePath).data.publicUrl
-      const { error } = await supabase.from('listings').insert({
+      const extension = form.image.name.split(".").pop()?.toLowerCase() || "jpg";
+
+      const imagePath = `${session.user.id}/${crypto.randomUUID()}.${extension}`;
+
+      const upload = await supabase.storage
+        .from("listing-images")
+        .upload(imagePath, form.image, {
+          contentType: form.image.type,
+          upsert: false,
+        });
+
+      if (upload.error) throw upload.error;
+
+      const imageUrl = supabase.storage
+        .from("listing-images")
+        .getPublicUrl(imagePath).data.publicUrl;
+
+      const { error } = await supabase.from("listings").insert({
         seller_id: session.user.id,
         brand: form.brand.trim(),
         model: form.model.trim(),
@@ -91,37 +120,131 @@ export default function SellListingPage({ session, onBack }) {
         description: form.description.trim(),
         image_url: imageUrl,
         specs,
-      })
-      if (error) throw error
-      onBack()
+      });
+      if (error) throw error;
+      onBack();
     } catch (error) {
-      setNotice(`Unable to save listing: ${error.message}`)
+      setNotice(`Unable to save listing: ${error.message}`);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
-  const selectedSpecs = categorySpecs[form.category] || []
+  const selectedSpecs = categorySpecs[form.category] || [];
 
-  return <main className="sell-page">
-    <button className="back-button" type="button" onClick={onBack}><ArrowLeft aria-hidden="true" /> BACK TO MARKETPLACE</button>
-    <section className="sell-page-panel">
-      <span className="section-index">MARKETPLACE / 02</span>
-      <h1>List your hardware.</h1>
-      <p>Enter the basic details and a clear product photo.</p>
-      {notice && <div className="sell-notice sell-notice--error">{notice}</div>}
-      <form className="listing-form" onSubmit={saveListing}>
-        <label>Brand<input name="brand" value={form.brand} onChange={updateForm} required placeholder="e.g. AMD" /></label>
-        <label>Model<input name="model" value={form.model} onChange={updateForm} required placeholder="e.g. Ryzen 5 5600X" /></label>
-        <label>Category<select name="category" value={form.category} onChange={updateForm}>{fallbackCategories.slice(1).map((category) => <option key={category}>{category}</option>)}</select></label>
-        <label>Price (₱)<input name="price" type="number" min="1" step="0.01" value={form.price} onChange={updateForm} required placeholder="5850" /></label>
-        <label>Condition<select name="condition" value={form.condition} onChange={updateForm}><option>Like new</option><option>Excellent</option><option>Good</option><option>Fair</option></select></label>
-        {selectedSpecs.map((spec) => <label key={spec.key}>{spec.label}<input name={spec.key} value={specs[spec.key] || ''} onChange={updateSpec} required placeholder={spec.placeholder} /></label>)}
-        <label className="listing-form-wide">Description<textarea name="description" value={form.description} onChange={updateForm} required rows="5" placeholder="Describe usage, testing, included accessories, and flaws." /></label>
-        <label className="listing-form-wide">Product photo<input name="image" type="file" accept="image/*" onChange={updateForm} required /><small>Choose one clear photo of the component.</small></label>
-        {imagePreview && <div className="image-preview"><img src={imagePreview} alt="Selected product preview" /></div>}
-        <button className="publish-button" type="submit" disabled={saving}>{saving ? 'SAVING…' : 'SAVE LISTING ↗'}</button>
-      </form>
-    </section>
-  </main>
+  return (
+    <main className="sell-page">
+      <button className="back-button" type="button" onClick={onBack}>
+        <ArrowLeft aria-hidden="true" /> BACK TO MARKETPLACE
+      </button>
+      <section className="sell-page-panel">
+        <span className="section-index">MARKETPLACE / 02</span>
+        <h1>List your hardware.</h1>
+        <p>Enter the basic details and a clear product photo.</p>
+        {notice && (
+          <div className="sell-notice sell-notice--error">{notice}</div>
+        )}
+        <form className="listing-form" onSubmit={saveListing}>
+          <label>
+            Brand
+            <input
+              name="brand"
+              value={form.brand}
+              onChange={updateForm}
+              required
+              placeholder="e.g. AMD"
+            />
+          </label>
+          <label>
+            Model
+            <input
+              name="model"
+              value={form.model}
+              onChange={updateForm}
+              required
+              placeholder="e.g. Ryzen 5 5600X"
+            />
+          </label>
+          <label>
+            Category
+            <select name="category" value={form.category} onChange={updateForm}>
+              {fallbackCategories.slice(1).map((category) => (
+                <option key={category}>{category}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Price (₱)
+            <input
+              name="price"
+              type="number"
+              min="1"
+              step="0.01"
+              value={form.price}
+              onChange={updateForm}
+              required
+              placeholder="5850"
+            />
+          </label>
+          <label>
+            Condition
+            <select
+              name="condition"
+              value={form.condition}
+              onChange={updateForm}
+            >
+              <option>Like new</option>
+              <option>Excellent</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
+          </label>
+
+          {selectedSpecs.map((spec) => (
+            <label key={spec.key}>
+              {spec.label}
+              <input
+                name={spec.key}
+                value={specs[spec.key] || ""}
+                onChange={updateSpec}
+                required
+                placeholder={spec.placeholder}
+              />
+            </label>
+          ))}
+          
+          <label className="listing-form-wide">
+            Description
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={updateForm}
+              required
+              rows="5"
+              placeholder="Describe usage, testing, included accessories, and flaws."
+            />
+          </label>
+          <label className="listing-form-wide">
+            Product photo
+            <input
+              name="image"
+              type="file"
+              accept="image/*"
+              onChange={updateForm}
+              required
+            />
+            <small>Choose one clear photo of the component.</small>
+          </label>
+          {imagePreview && (
+            <div className="image-preview">
+              <img src={imagePreview} alt="Selected product preview" />
+            </div>
+          )}
+          <button className="publish-button" type="submit" disabled={saving}>
+            {saving ? "SAVING…" : "SAVE LISTING ↗"}
+          </button>
+        </form>
+      </section>
+    </main>
+  );
 }

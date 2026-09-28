@@ -7,4 +7,6 @@
 .sell-page-panel .listing-form { margin-top: 34px; }
 .sell-page-panel .sell-notice { margin-bottom: 24px; }
 .sell-notice--error { border-color: #ff8277; color: #ffb9b2; }
-.sell-page-panel .image-preview { margin-top: 0; }
+.sell-page-panel .listing-form input[type='file'] { width: 100%; min-width: 0; padding: 10px; overflow: hidden; }
+.sell-page-panel .image-preview { width: 100%; max-width: none; height: clamp(180px, 30vw, 280px); margin-top: 0; min-width: 0; }
+.sell-page-panel .image-preview img { display: block; width: 100%; height: 100%; object-fit: contain; }
