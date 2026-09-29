@@ -1,8 +1,8 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import AuthForm from "../components/auth/AuthForm";
-import AuthModeSwitch from "../components/auth/AuthModeSwitch";
-import PixelSnow from "../components/visuals/PixelSnow";
+import AuthForm from "../components/AuthForm";
+import AuthModeSwitch from "../components/AuthModeSwitch";
+import PixelSnow from "../../../components/visuals/PixelSnow";
 import "./AuthPage.css";
 
 export default function AuthPage() {

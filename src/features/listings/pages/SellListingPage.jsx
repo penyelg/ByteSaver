@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import { supabase } from '../lib/supabase'
-import { fallbackCategories } from './MarketplacePage'
+import { supabase } from '../../../lib/supabase'
+import { fallbackCategories } from '../../marketplace/pages/MarketplacePage'
 import './SellListingPage.css'
 
 const categorySpecs = {
@@ -138,9 +138,15 @@ export default function SellListingPage({ session, onBack }) {
         <ArrowLeft aria-hidden="true" /> BACK TO MARKETPLACE
       </button>
       <section className="sell-page-panel">
-        <span className="section-index">MARKETPLACE / 02</span>
-        <h1>List your hardware.</h1>
-        <p>Enter the basic details and a clear product photo.</p>
+        <div className="sell-page-heading">
+          <div>
+            <span className="section-index">MARKETPLACE / 02</span>
+            <h1>List your hardware.</h1>
+            <p>Give your gear a better second life.</p>
+          </div>
+          <span className="sell-page-status">● READY TO LIST</span>
+        </div>
+        <div className="sell-page-intro">Complete the details below so buyers can understand exactly what they are getting.</div>
         {notice && (
           <div className="sell-notice sell-notice--error">{notice}</div>
         )}

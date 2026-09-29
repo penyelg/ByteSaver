@@ -16,8 +16,8 @@ import {
   Plus,
   Zap,
 } from "lucide-react";
-import { supabase } from "../lib/supabase";
-import wordmark from "../assets/bytesaver-wordmark-primary.png";
+import { supabase } from "../../../lib/supabase";
+import wordmark from "../../../assets/bytesaver-wordmark-primary.png";
 import "./MarketplacePage.css";
 
 export const fallbackCategories = [
@@ -57,7 +57,7 @@ function firstValue(row, keys, fallback = "") {
   return fallback;
 }
 
-export default function MarketplacePage({ session, onSell, onViewListing }) {
+export default function MarketplacePage({ session, cartItems = [], onRemoveFromCart, onSell, onViewListing }) {
   const [listings, setListings] = useState([]);
   const [categories, setCategories] = useState([]);
   const [query, setQuery] = useState("");
@@ -69,6 +69,7 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [accountOpen, setAccountOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const accountRef = useRef(null);
 
   // use for fetching the data from Supabase
@@ -291,9 +292,10 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
             className="header-icon-button header-bag-button"
             type="button"
             aria-label="Shopping bag"
+            onClick={() => setCartOpen(true)}
           >
             <ShoppingBag aria-hidden="true" />
-            <span>0</span>
+            <span>{cartItems.length}</span>
           </button>
         </div>
         <div className="account-menu" ref={accountRef}>
@@ -406,18 +408,10 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
             <label>
               <input
                 type="checkbox"
-                checked={selectedConditions.includes("brand new")}
-                onChange={() => toggleCondition("brand new")}
-              />{" "}
-              Brand New / Open Box
-            </label>
-            <label>
-              <input
-                type="checkbox"
                 checked={selectedConditions.includes("like new")}
                 onChange={() => toggleCondition("like new")}
               />{" "}
-              Like New (Mint)
+              Like new
             </label>
             <label>
               <input
@@ -425,7 +419,7 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
                 checked={selectedConditions.includes("excellent")}
                 onChange={() => toggleCondition("excellent")}
               />{" "}
-              Excellent (Minor Use)
+              Excellent
             </label>
             <label>
               <input
@@ -433,7 +427,15 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
                 checked={selectedConditions.includes("good")}
                 onChange={() => toggleCondition("good")}
               />{" "}
-              Good (Tested Working)
+              Good
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedConditions.includes("fair")}
+                onChange={() => toggleCondition("fair")}
+              />{" "}
+              Fair
             </label>
           </div>
           <div className="filter-group price-filter">
@@ -504,6 +506,34 @@ export default function MarketplacePage({ session, onSell, onViewListing }) {
           )}
         </section>
       </div>
+      {cartOpen && (
+        <div className="cart-overlay" role="presentation" onClick={() => setCartOpen(false)}>
+          <aside className="cart-drawer" role="dialog" aria-label="Shopping cart" onClick={(event) => event.stopPropagation()}>
+            <div className="cart-drawer-heading">
+              <div><span className="section-index">YOUR BAG / 04</span><h2>Saved hardware.</h2></div>
+              <button type="button" className="cart-close" aria-label="Close cart" onClick={() => setCartOpen(false)}>×</button>
+            </div>
+            {cartItems.length === 0 ? (
+              <div className="cart-empty"><ShoppingBag aria-hidden="true" /><p>Your cart is empty.</p><small>Add a listing to keep it here.</small></div>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cartItems.map((item) => {
+                    const cartListing = item.listing || {};
+                    const cartTitle = `${cartListing.brand || ''} ${cartListing.model || ''}`.trim() || 'Untitled listing';
+                    return <div className="cart-item" key={item.id}>
+                      <div className="cart-item-image">{cartListing.image_url ? <img src={cartListing.image_url} alt="" /> : <span>{(cartListing.category || 'HW').slice(0, 2)}</span>}</div>
+                      <div className="cart-item-copy"><span>{cartListing.category || 'Hardware'}</span><strong>{cartTitle}</strong><b>{cartListing.price == null ? 'PRICE ON REQUEST' : `₱${Number(cartListing.price).toLocaleString()}`}</b></div>
+                      <button className="cart-remove" type="button" aria-label={`Remove ${cartTitle}`} onClick={() => onRemoveFromCart?.(item)}>×</button>
+                    </div>;
+                  })}
+                </div>
+                <div className="cart-drawer-note">Checkout and seller contact will be available in the next step.</div>
+              </>
+            )}
+          </aside>
+        </div>
+      )}
     </main>
   );
 }
@@ -532,11 +562,19 @@ function ListingCard({ listing, onView }) {
     ["image_url", "image", "thumbnail_url"],
     "",
   );
+  const specSummary = Object.entries(
+    listing.specs && typeof listing.specs === "object" ? listing.specs : {},
+  )
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .slice(0, 3)
+    .map(([key, value]) => `${key.replaceAll("_", " ")}: ${value}`)
+    .join("  ·  ");
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
     <article className="listing-card">
       <div className="listing-image">
+        <span className="listing-condition-badge">{condition}</span>
         {imageUrl && !imageFailed ? (
           <img src={imageUrl} alt="" onError={() => setImageFailed(true)} />
         ) : (
@@ -548,7 +586,7 @@ function ListingCard({ listing, onView }) {
       <div className="listing-meta">
         <span>{category}</span>
         <strong>{title}</strong>
-        <small>{condition}</small>
+        {specSummary && <p className="listing-specs">{specSummary}</p>}
         <div className="listing-bottom">
           <b>
             {price === null
