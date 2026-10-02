@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import AuthForm from "../components/AuthForm";
 import AuthModeSwitch from "../components/AuthModeSwitch";
 import PixelSnow from "../../../components/visuals/PixelSnow";
+import BrandPanel from "../../../components/brand/BrandPanel";
 import "./AuthPage.css";
 
 export default function AuthPage() {
@@ -25,23 +26,29 @@ export default function AuthPage() {
           farPlane={15}
         />
       </div>
-      <section className="form-panel">
-        <div className="form-wrap">
-          <div className="form-heading">
-            <span className="section-index">
-              {mode === "login" ? "01" : "02"} / ACCOUNT
-            </span>
-            <h1>{mode === "login" ? "Welcome!" : "Create your account."}</h1>
-            <p>
-              {mode === "login"
-                ? "Sign in to browse verified hardware and manage your listings."
-                : "Join a marketplace built for better hardware decisions."}
-            </p>
+      <div className="auth-layout">
+        <BrandPanel />
+        <section
+          className="form-panel"
+          aria-label={mode === "login" ? "Sign in" : "Create an account"}
+        >
+          <div className="form-wrap">
+            <div className="form-heading">
+              <span className="section-index">
+                {mode === "login" ? "01" : "02"} / ACCOUNT
+              </span>
+              <h1>{mode === "login" ? "Welcome!" : "Create your account."}</h1>
+              <p>
+                {mode === "login"
+                  ? "Sign in to browse pre-owned hardware and manage your listings."
+                  : "Join a marketplace built for better hardware decisions."}
+              </p>
+            </div>
+            <AuthModeSwitch mode={mode} />
+            <AuthForm mode={mode} />
           </div>
-          <AuthModeSwitch mode={mode} />
-          <AuthForm mode={mode} />
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }
