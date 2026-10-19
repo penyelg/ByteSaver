@@ -1,58 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
-import { fallbackCategories } from '../../marketplace/pages/MarketplacePage'
+import { getProfile } from '../../account/services/profileService'
+import { isIdentityApproved } from '../../account/utils/verification'
 import './SellListingPage.css'
-
-const categorySpecs = {
-  CPU: [
-    { key: 'socket', label: 'Socket', placeholder: 'e.g. AM4' },
-    { key: 'cores', label: 'Cores', placeholder: 'e.g. 6' },
-    { key: 'threads', label: 'Threads', placeholder: 'e.g. 12' },
-  ],
-  GPU: [
-    { key: 'vram', label: 'VRAM', placeholder: 'e.g. 12GB' },
-    { key: 'memory_type', label: 'Memory type', placeholder: 'e.g. GDDR6' },
-    { key: 'power_requirement', label: 'Power requirement', placeholder: 'e.g. 170W' },
-  ],
-  RAM: [
-    { key: 'capacity', label: 'Capacity', placeholder: 'e.g. 16GB' },
-    { key: 'generation', label: 'Generation', placeholder: 'e.g. DDR4' },
-    { key: 'speed', label: 'Speed', placeholder: 'e.g. 3200MHz' },
-  ],
-  Motherboard: [
-    { key: 'socket', label: 'Socket', placeholder: 'e.g. AM4' },
-    { key: 'chipset', label: 'Chipset', placeholder: 'e.g. B550' },
-    { key: 'form_factor', label: 'Form factor', placeholder: 'e.g. ATX' },
-  ],
-  Storage: [
-    { key: 'capacity', label: 'Capacity', placeholder: 'e.g. 1TB' },
-    { key: 'storage_type', label: 'Type', placeholder: 'e.g. NVMe SSD' },
-    { key: 'interface', label: 'Interface', placeholder: 'e.g. PCIe 3.0' },
-  ],
-  'Power Supply': [
-    { key: 'wattage', label: 'Wattage', placeholder: 'e.g. 750W' },
-    { key: 'efficiency', label: 'Efficiency rating', placeholder: 'e.g. 80+ Gold' },
-    { key: 'modular', label: 'Modular type', placeholder: 'e.g. Fully modular' },
-  ],
-  Monitor: [
-    { key: 'screen_size', label: 'Screen size', placeholder: 'e.g. 24 inches' },
-    { key: 'resolution', label: 'Resolution', placeholder: 'e.g. 1920x1080' },
-    { key: 'refresh_rate', label: 'Refresh rate', placeholder: 'e.g. 144Hz' },
-  ],
-  Peripherals: [
-    { key: 'connection', label: 'Connection type', placeholder: 'e.g. USB-C' },
-    { key: 'compatibility', label: 'Compatibility', placeholder: 'e.g. Windows / Mac' },
-    { key: 'included', label: 'Included accessories', placeholder: 'e.g. Cable, case' },
-  ],
-}
 
 // Renders the sell page and manages the form used to create a hardware listing.
 export default function SellListingPage({ session, onBack }) {
   const [form, setForm] = useState({
     brand: "",
     model: "",
-    category: "CPU",
+    category: "",
     price: "",
     condition: "Good",
     description: "",
@@ -63,6 +21,77 @@ export default function SellListingPage({ session, onBack }) {
   const [imagePreview, setImagePreview] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedSpecs, setSelectedSpecs] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingSpecs, setLoadingSpecs] = useState(false);
+
+  // Load categories once, then load their spec definitions whenever the chosen category changes.
+  useEffect(() => {
+    let active = true;
+
+    const loadCategories = async () => {
+      if (!supabase) {
+        setNotice("Supabase is not configured.");
+        setLoadingCategories(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .eq("is_active", true)
+        .order("name");
+
+      if (!active) return;
+      if (error) {
+        setNotice(`Unable to load categories: ${error.message}`);
+      } else {
+        setCategories(data || []);
+        setForm((current) => ({
+          ...current,
+          category: current.category || data?.[0]?.name || "",
+        }));
+      }
+      setLoadingCategories(false);
+    };
+
+    loadCategories();
+    return () => { active = false; };
+  }, []);
+
+  // Specification definitions describe the form; entered values are saved in listings.specs JSONB.
+  useEffect(() => {
+    let active = true;
+    const category = categories.find((item) => item.name === form.category);
+
+    if (!category || !supabase) {
+      setSelectedSpecs([]);
+      setLoadingSpecs(false);
+      return () => { active = false; };
+    }
+
+    const loadSpecs = async () => {
+      setLoadingSpecs(true);
+      const { data, error } = await supabase
+        .from("category_specifications")
+        .select("spec_key, label, input_type, is_required, options, sort_order")
+        .eq("category_id", category.id)
+        .order("sort_order");
+
+      if (!active) return;
+      if (error) {
+        setNotice(`Unable to load category specifications: ${error.message}`);
+        setSelectedSpecs([]);
+      } else {
+        setSelectedSpecs(data || []);
+      }
+      setLoadingSpecs(false);
+    };
+
+    loadSpecs();
+    return () => { active = false; };
+  }, [categories, form.category]);
 
   // Updates the main listing fields and creates a preview when a product image is selected.
   const updateForm = (event) => {
@@ -89,10 +118,26 @@ export default function SellListingPage({ session, onBack }) {
   const saveListing = async (event) => {
     event.preventDefault();
     if (!supabase) return setNotice("Supabase is not configured.");
+    const selectedCategory = categories.find((category) => category.name === form.category);
+    if (!selectedCategory) return setNotice("Choose an available category before saving.");
+
+    // Convert number inputs to JSON numbers and omit blank optional fields before saving.
+    const listingSpecs = Object.fromEntries(
+      selectedSpecs
+        .map((spec) => [spec, specs[spec.spec_key]?.trim() ?? ""])
+        .filter(([spec, value]) => value !== "")
+        .map(([spec, value]) => [
+          spec.spec_key,
+          spec.input_type === "number" ? Number(value) : value,
+        ]),
+    );
 
     setSaving(true);
 
     try {
+      const eligibility = await getProfile(session.user.id);
+      if (eligibility.error) throw eligibility.error;
+      if (!isIdentityApproved(eligibility.data)) throw new Error('Administrator identity approval is required before selling.');
       const extension = form.image.name.split(".").pop()?.toLowerCase() || "jpg";
 
       const imagePath = `${session.user.id}/${crypto.randomUUID()}.${extension}`;
@@ -115,11 +160,12 @@ export default function SellListingPage({ session, onBack }) {
         brand: form.brand.trim(),
         model: form.model.trim(),
         category: form.category,
+        category_id: selectedCategory.id,
         price: Number(form.price),
         condition: form.condition,
         description: form.description.trim(),
         image_url: imageUrl,
-        specs,
+        specs: listingSpecs,
       });
       if (error) throw error;
       onBack();
@@ -129,8 +175,6 @@ export default function SellListingPage({ session, onBack }) {
       setSaving(false);
     }
   };
-
-  const selectedSpecs = categorySpecs[form.category] || [];
 
   return (
     <main className="sell-page">
@@ -173,9 +217,9 @@ export default function SellListingPage({ session, onBack }) {
           </label>
           <label>
             Category
-            <select name="category" value={form.category} onChange={updateForm}>
-              {fallbackCategories.slice(1).map((category) => (
-                <option key={category}>{category}</option>
+            <select name="category" value={form.category} onChange={updateForm} required disabled={loadingCategories || categories.length === 0}>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>{category.name}</option>
               ))}
             </select>
           </label>
@@ -207,15 +251,24 @@ export default function SellListingPage({ session, onBack }) {
           </label>
 
           {selectedSpecs.map((spec) => (
-            <label key={spec.key}>
+            <label key={spec.spec_key}>
               {spec.label}
-              <input
-                name={spec.key}
-                value={specs[spec.key] || ""}
-                onChange={updateSpec}
-                required
-                placeholder={spec.placeholder}
-              />
+              {spec.input_type === "select" ? (
+                <select name={spec.spec_key} value={specs[spec.spec_key] || ""} onChange={updateSpec} required={spec.is_required}>
+                  <option value="">Choose an option</option>
+                  {(Array.isArray(spec.options) ? spec.options : []).map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  name={spec.spec_key}
+                  type={spec.input_type === "number" ? "number" : "text"}
+                  value={specs[spec.spec_key] || ""}
+                  onChange={updateSpec}
+                  required={spec.is_required}
+                />
+              )}
             </label>
           ))}
           
@@ -246,8 +299,8 @@ export default function SellListingPage({ session, onBack }) {
               <img src={imagePreview} alt="Selected product preview" />
             </div>
           )}
-          <button className="publish-button" type="submit" disabled={saving}>
-            {saving ? "SAVING…" : "SAVE LISTING ↗"}
+          <button className="publish-button" type="submit" disabled={saving || loadingCategories || loadingSpecs || categories.length === 0}>
+            {loadingCategories ? "LOADING CATEGORIES…" : loadingSpecs ? "LOADING SPECS…" : saving ? "SAVING…" : "SAVE LISTING ↗"}
           </button>
         </form>
       </section>
