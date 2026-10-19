@@ -1,83 +1,57 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import AuthPage from '../features/auth/pages/AuthPage'
 import MarketplacePage from '../features/marketplace/pages/MarketplacePage'
 import SellListingPage from '../features/listings/pages/SellListingPage'
 import ListingDetailsPage from '../features/marketplace/pages/ListingDetailsPage'
-import { supabase } from '../lib/supabase'
-import { ensureUserProfile } from '../lib/profile'
+import ProfileSetupPage from '../features/account/pages/ProfileSetupPage'
+import VerificationPendingPage from '../features/account/pages/VerificationPendingPage'
+import AdminDashboardPage from '../features/admin/pages/AdminDashboardPage'
+import { isIdentityApproved } from '../features/account/utils/verification'
+import useSession from '../features/auth/hooks/useSession'
+import useCart from '../features/cart/hooks/useCart'
 
 export default function App() {
-  const [session, setSession] = useState(undefined)
-  const [page, setPage] = useState('browse')
+  const [page, setPage] = useState('home')
+  const location = useLocation()
+  const navigate = useNavigate()
+  const openAdmin = () => { setPage('admin'); navigate('/admin'); }
+  const openMarketplace = () => { setPage('browse'); navigate('/'); }
+  const verifyOwnAccount = () => { setPage('verify'); navigate('/'); }
   const [selectedListing, setSelectedListing] = useState(null)
-  const [cartItems, setCartItems] = useState([])
-
-  const loadCart = async (userId) => {
-    if (!supabase || !userId) return
-    const { data, error } = await supabase
-      .from('cart_items')
-      .select('id, listing_id, quantity')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: true })
-    if (error) {
-      console.warn('Unable to load cart:', error.message)
-      return
-    }
-    const listingIds = (data || []).map((item) => item.listing_id)
-    if (!listingIds.length) return setCartItems([])
-    const { data: listings, error: listingError } = await supabase
-      .from('listings')
-      .select('*')
-      .in('id', listingIds)
-    if (listingError) {
-      console.warn('Unable to load cart listings:', listingError.message)
-      return
-    }
-    const listingMap = new Map((listings || []).map((listing) => [listing.id, listing]))
-    setCartItems((data || []).filter((item) => listingMap.has(item.listing_id)).map((item) => ({ ...item, listing: listingMap.get(item.listing_id) })))
-  }
-
-  useEffect(() => {
-    if (!supabase) {
-      setSession(null)
-      return undefined
-    }
-
-    const applySession = async (nextSession) => {
-      if (nextSession?.user) {
-        const { error } = await ensureUserProfile(nextSession.user)
-        if (error) console.warn('Unable to sync public user profile:', error.message)
-        await loadCart(nextSession.user.id)
-      } else {
-        setCartItems([])
-      }
-      setSession(nextSession)
-    }
-
-    supabase.auth.getSession().then(({ data }) => applySession(data.session))
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => applySession(nextSession))
-
-    return () => listener.subscription.unsubscribe()
-  }, [])
+  const { cartItems, loadCart, clearCart, addToCart, removeFromCart } = useCart()
+  const { session, profile, profileError, completeProfile, refreshProfile } = useSession({ loadCart, clearCart })
 
   if (session === undefined) return <div className="auth-loading">CHECKING SESSION…</div>
   if (session) {
+    const approved = isIdentityApproved(profile);
+    // Reviewers can reach their queue without approving their own identity.
+    if (profile?.is_admin && (location.pathname.startsWith('/admin') || page === 'admin' || page === 'home' || !approved && page !== 'verify')) {
+      return <AdminDashboardPage session={session} onMarketplace={approved ? openMarketplace : undefined} onVerify={!approved ? verifyOwnAccount : undefined} />
+    }
+    if (location.pathname.startsWith('/admin') && !profileError) {
+      return <main className="profile-setup-shell"><section className="profile-setup-panel"><h1>Administrator access required.</h1><p className="profile-setup-intro">This workspace is available to authorized administrators.</p><button className="profile-setup-submit" onClick={openMarketplace}>Back to your account</button></section></main>
+    }
+    if (!profileError && profile?.verification?.status === 'pending_review') {
+      return <VerificationPendingPage verification={profile.verification} onRefresh={refreshProfile} onReviewIdentities={profile.is_admin ? openAdmin : undefined} />
+    }
+    if (profileError || !approved) {
+      // A confirmed submission advances to pending review; approval unlocks browsing.
+      return <ProfileSetupPage
+        session={session}
+        profile={profile}
+        loadError={profileError}
+        onReviewIdentities={profile?.is_admin ? openAdmin : undefined}
+        onComplete={(updatedProfile) => {
+          completeProfile(updatedProfile)
+          setPage('browse')
+        }}
+      />
+    }
     if (page === 'sell') return <SellListingPage session={session} onBack={() => setPage('browse')} />
-    const addToCart = async (listing) => {
-      if (cartItems.some((item) => item.listing_id === listing.id)) return { alreadyInCart: true }
-      const { data, error } = await supabase.from('cart_items').insert({ user_id: session.user.id, listing_id: listing.id, quantity: 1 }).select('id, listing_id, quantity').single()
-      if (error) return { error: error.message }
-      setCartItems((current) => [...current, { ...data, listing }])
-      return { added: true }
-    }
-    const removeFromCart = async (item) => {
-      const { error } = await supabase.from('cart_items').delete().eq('id', item.id).eq('user_id', session.user.id)
-      if (!error) setCartItems((current) => current.filter((cartItem) => cartItem.id !== item.id))
-      return error
-    }
-    if (page === 'details' && selectedListing) return <ListingDetailsPage listing={selectedListing} onBack={() => setPage('browse')} onAddToCart={addToCart} />
-    return <MarketplacePage session={session} cartItems={cartItems} onRemoveFromCart={removeFromCart} onSell={() => setPage('sell')} onViewListing={(listing) => { setSelectedListing(listing); setPage('details') }} />
+    if (page === 'details' && selectedListing) return <ListingDetailsPage listing={selectedListing} onBack={() => setPage('browse')} onAddToCart={(listing) => addToCart(session.user.id, listing)} />
+    return <MarketplacePage session={session} onReviewIdentities={profile.is_admin ? openAdmin : undefined} cartItems={cartItems} onRemoveFromCart={(item) => removeFromCart(session.user.id, item)} onSell={() => setPage('sell')} onViewListing={(listing) => { setSelectedListing(listing); setPage('details') }} />
   }
   return <AuthPage />
 }
