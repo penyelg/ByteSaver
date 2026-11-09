@@ -18,12 +18,13 @@ export default function useMarketplace() {
       }
 
       const [listingResult, categoryResult] = await Promise.all([
-        supabase.from("listings").select("*"),
+        supabase.rpc("browse_marketplace_listings"),
         supabase.from("categories").select("*"),
       ]);
 
       if (!mounted) return;
-      if (!listingResult.error) setListings(listingResult.data || []);
+      if (listingResult.error) setError("Unable to load marketplace listings.");
+      else setListings(listingResult.data || []);
       if (!categoryResult.error) setCategories(categoryResult.data || []);
       setLoading(false);
     };

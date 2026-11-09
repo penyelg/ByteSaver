@@ -6,18 +6,25 @@ The administrator workspace is separate from account onboarding and marketplace 
 admin/
   pages/AdminDashboardPage.jsx   Sidebar, header, routing, dashboard data and refresh
   pages/IdentityReviewPage.jsx   Existing ID review workflow within the workspace
+  pages/UserManagementPage.jsx   Account directory, details, access changes and audit history
   components/AdminOverview.jsx  Verification metrics, pending requests and planned tools
   services/adminService.js      Administrator reads, private ID previews and review decisions
-  styles/admin.css              Independent desktop/mobile dashboard styles
+  services/userManagementService.js  User directory and account-access RPCs
+  styles/admin.css              Shared admin theme, controls, cards, tables and review primitives
+  styles/AdminDashboardPage.css Workspace shell and responsive navigation
+  styles/AdminOverview.css      Overview metrics and workspace-tool cards
+  styles/IdentityReviewPage.css Identity-review queue, toolbar, photo and actions
+  styles/UserManagementPage.css Directory filters, status badges, details and access history
 ```
 
 ## Routes and access
 
 - `/admin`: overview with exact counts for pending submissions, approved accounts, rejected submissions, and all ID submissions. Rejected counts include historical attempts; they are not unique-user counts.
 - `/admin/verifications`: identity review queue, filters, private photo preview, approval/rejection, and decision history.
-- User and listing navigation entries are disabled and labeled “Soon.” User management and listing moderation are not implemented by this change.
+- `/admin/users`: searchable account directory, verification/access filters, account details, and audited suspension/reactivation. See [user-management setup](user-management.md); the migration is applied to the connected project.
+- Listing navigation remains disabled and labeled “Soon.” Listing moderation is not implemented.
 
-`App.jsx` checks the administrator permission loaded from the existing protected database function before rendering the workspace. Non-administrators visiting an admin URL see an access-required message. Signed-out visitors must sign in first. Existing database policies and review authorization remain in effect. No database schema or permission changes were required for the dashboard.
+`App.jsx` checks account access and administrator permission loaded from protected database functions before rendering the workspace. Non-administrators visiting an admin URL see an access-required message. Signed-out visitors must sign in first. The original overview required no schema changes; user management adds private access/audit tables, protected RPCs, and suspension enforcement through a separate migration.
 
 Administrators land on the dashboard after their initial session load. Approved administrators can choose “Go to marketplace” and later return through the account menu. Unverified administrators can reach their own ID onboarding through a separate sidebar action; another administrator must review their submission.
 

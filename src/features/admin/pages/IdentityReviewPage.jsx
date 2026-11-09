@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getBarangays } from '../../account/services/profileService';
-import { getIdentityPhoto, getReviewQueue, reviewIdentity } from '../services/adminService';
+import { getIdentityPhoto, getReviewQueue, getReviewSubmission, reviewIdentity } from '../services/adminService';
+import '../styles/admin.css';
+import '../styles/IdentityReviewPage.css';
 
-export default function IdentityReviewPage({ session, onDecision, initialSubmissionId }) {
-  const [status, setStatus] = useState('pending_review');
+export default function IdentityReviewPage({ session, onDecision, initialSubmissionId, initialStatus = 'pending_review' }) {
+  const [status, setStatus] = useState(initialStatus);
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState(null);
   const [barangays, setBarangays] = useState([]);
@@ -18,12 +20,15 @@ export default function IdentityReviewPage({ session, onDecision, initialSubmiss
   useEffect(() => {
     let active = true;
     setLoading(true); setSelected(null); setPhoto(''); setError('');
-    getReviewQueue(status).then(({ data, error }) => {
+    Promise.all([getReviewQueue(status), initialSubmissionId ? getReviewSubmission(initialSubmissionId) : Promise.resolve({ data: null })]).then(([queue, requested]) => {
       if (!active) return;
+      const error = queue.error || requested.error;
+      const selectedRow = requested.data?.status === status ? requested.data : null;
+      const data = selectedRow && !queue.data?.some((row) => row.id === selectedRow.id) ? [selectedRow, ...(queue.data || [])] : queue.data;
       if (error) { setRows([]); setError(error.message); }
       else {
         setRows(data || []);
-        if (initialSubmissionId) setSelected(data?.find((row) => row.id === initialSubmissionId) || null);
+        if (initialSubmissionId) setSelected(selectedRow);
       }
       setLoading(false);
     }).catch(() => { if (active) { setRows([]); setError('Unable to load submissions. Try refreshing.'); setLoading(false); } });

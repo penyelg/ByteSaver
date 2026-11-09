@@ -16,10 +16,12 @@ export default function useCart() {
     setCartItems((current) => [...current, { ...data, listing }]);
     return { added: true };
   };
+
   const removeFromCart = async (userId, item) => {
     const error = await deleteCartItem(userId, item.id);
     if (!error) setCartItems((current) => current.filter((cartItem) => cartItem.id !== item.id));
     return error;
   };
+  
   return { cartItems, loadCart, clearCart, addToCart, removeFromCart };
 }

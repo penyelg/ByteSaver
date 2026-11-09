@@ -1,0 +1,54 @@
+.member-account .member-account-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.member-account-heading > div { min-width: 0; }
+.member-account-heading p { overflow-wrap: anywhere; }
+
+.member-account-avatar {
+  display: grid;
+  flex: 0 0 60px;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border: 1px solid #3c5947;
+  border-radius: 50%;
+  background: #0e231b;
+  color: #6aff83;
+}
+
+.member-account-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-account-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.member-account-links :is(a, button) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1px solid #2a3a31;
+  border-radius: 8px;
+  background: #0e231b;
+  color: #e9f0ed;
+  font: 600 14px Manrope, sans-serif;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.member-account-links svg { width: 20px; color: #6aff83; }
+.member-account-links a svg:last-child { margin-left: auto; }

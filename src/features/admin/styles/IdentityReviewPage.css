@@ -1,0 +1,111 @@
+/* Identity-review queue, toolbar, private photo, and review actions. */
+
+.admin-workspace .review-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-workspace .review-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #adc8b6;
+  font-size: 11px;
+}
+
+.admin-workspace .review-toolbar .admin-muted {
+  margin-left: auto;
+}
+
+.admin-workspace .review-toolbar select {
+  padding: 11px 12px;
+  border: 1px solid #314c39;
+  border-radius: 4px;
+  background: #0b1610;
+  color: #d5e9dc;
+  font: 12px Manrope, sans-serif;
+}
+
+.admin-workspace .review-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 2fr);
+  gap: 28px;
+}
+
+.admin-workspace .review-queue {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  max-height: 750px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.admin-workspace .review-item {
+  display: grid;
+  gap: 9px;
+  width: 100%;
+  padding: 18px;
+  border: 1px solid #2b4132;
+  border-radius: 4px;
+  background: #102017;
+  color: #d7eade;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.admin-workspace .review-item.selected {
+  border-color: #70c184;
+  background: #193122;
+}
+
+.admin-workspace .review-item strong {
+  font-size: 13px;
+}
+
+.admin-workspace .review-item span, .admin-workspace .review-item small {
+  color: #85a791;
+  font-size: 10px;
+}
+
+.admin-workspace .review-photo {
+  display: block;
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+  margin-bottom: 24px;
+  border: 1px solid #2d4735;
+  border-radius: 4px;
+  background: #08120c;
+}
+
+.admin-workspace .admin-review-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-workspace .review-reject {
+  color: #efb1a7;
+  border-color: #70453c;
+}
+
+@media (max-width: 850px) {
+  .admin-workspace .review-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-workspace .review-queue {
+    max-height: 230px;
+  }
+
+  .admin-workspace .review-toolbar .admin-muted {
+    width: 100%;
+    margin-left: 0;
+  }
+}

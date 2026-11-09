@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import MarketplaceHeader from '../components/MarketplaceHeader';
 import MarketplaceIntro from '../components/MarketplaceIntro';
 import MarketplaceFilters from '../components/MarketplaceFilters';
@@ -6,7 +7,8 @@ import ListingCard from '../components/ListingCard';
 import CartDrawer from '../../cart/components/CartDrawer';
 import useMarketplace from '../hooks/useMarketplace';
 import { fallbackCategories, firstValue, filterListings, sortListings } from '../utils/listingUtils';
-import './MarketplacePage.css';
+import '../styles/marketplace.css';
+import '../styles/MarketplacePage.css';
 
 export { fallbackCategories } from '../utils/listingUtils';
 
@@ -17,8 +19,8 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
   const [sortBy, setSortBy] = useState("featured");
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [maxPrice, setMaxPrice] = useState(150000);
-  const [benchmarkedOnly, setBenchmarkedOnly] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const categoryNames = useMemo(() => {
     const names = categories
@@ -34,8 +36,8 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
   }, [categories]);
 
   const filteredListings = useMemo(
-    () => filterListings(listings, { query, activeCategory, selectedConditions, maxPrice, benchmarkedOnly }),
-    [listings, query, activeCategory, selectedConditions, maxPrice, benchmarkedOnly],
+    () => filterListings(listings, { query, activeCategory, selectedConditions, maxPrice }),
+    [listings, query, activeCategory, selectedConditions, maxPrice],
   );
   const sortedListings = useMemo(
     () => sortListings(filteredListings, sortBy),
@@ -46,7 +48,6 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
     setActiveCategory("All hardware");
     setSelectedConditions([]);
     setMaxPrice(150000);
-    setBenchmarkedOnly(false);
   };
 
   const toggleCondition = (condition) => {
@@ -59,7 +60,11 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
 
   return (
     <main className="marketplace-shell">
-      <MarketplaceHeader session={session} cartItems={cartItems} onSell={onSell} onOpenCart={() => setCartOpen(true)} onReviewIdentities={onReviewIdentities} />
+      <MarketplaceHeader session={session} cartItems={cartItems} onSell={onSell} onOpenCart={() => setCartOpen(true)} onReviewIdentities={onReviewIdentities} query={query} onSearch={setQuery} />
+      <div className="mobile-browse-tools">
+        <label><Search aria-hidden="true" /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search hardware" aria-label="Search hardware" /></label>
+        <button type="button" aria-label="Filters" aria-expanded={filtersOpen} aria-controls="marketplace-filters" onClick={() => setFiltersOpen((open) => !open)}><SlidersHorizontal aria-hidden="true" /></button>
+      </div>
       <MarketplaceIntro onSell={onSell} />
 
       <div className="marketplace-body">
@@ -67,9 +72,11 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
           categoryNames={categoryNames} activeCategory={activeCategory} setActiveCategory={setActiveCategory}
           selectedConditions={selectedConditions} toggleCondition={toggleCondition}
           maxPrice={maxPrice} setMaxPrice={setMaxPrice} resetFilters={resetFilters}
+          filtersOpen={filtersOpen}
         />
 
         <section className="marketplace-content">
+          <h2 className="mobile-browse-title">Available hardware</h2>
           <div className="browse-toolbar" id="recent-deals">
             <div className="active-deals">
               <span>ACTIVE DEALS:</span>
@@ -99,7 +106,7 @@ export default function MarketplacePage({ session, cartItems = [], onRemoveFromC
               {error}
             </div>
           )}
-          {!loading && filteredListings.length === 0 && (
+          {!loading && !error && filteredListings.length === 0 && (
             <div className="marketplace-empty">
               <span className="empty-code">NO MATCHES / 001</span>
               <h2>No matches found.</h2>

@@ -1,0 +1,29 @@
+.reservations-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0; }
+.reservations-heading h1 { margin: 0; font: 700 clamp(34px, 9vw, 54px)/.95 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.reservations-heading button, .reservation-views button {
+  min-height: 44px;
+  border: 1px solid #2a3a31;
+  border-radius: 6px;
+  background: #0e231b;
+  color: #e9f0ed;
+  font: 600 14px Manrope, sans-serif;
+  cursor: pointer;
+}
+.reservations-heading button { flex: none; width: 44px; display: grid; place-items: center; }
+.reservations-heading button svg { width: 16px; }
+.reservation-views, .reservation-contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.reservation-views button[aria-pressed='true'], .reservation-contact a { background: #6aff83; color: #07100e; }
+.reservation-card, .reservations-empty { margin-top: 16px; padding: 16px; border: 1px solid #2a3a31; border-radius: 8px; background: #0e231b; }
+.reservation-card .reservation-status { display: inline-block; margin: 0 0 8px; padding: 4px 7px; border-radius: 4px; background: #25392e; color: #e9f0ed; font: 600 11px 'DM Mono', monospace; text-transform: uppercase; }
+.reservation-card .reservation-status[data-status='reserved'] { background: #6aff83; color: #07100e; }
+.reservation-card .reservation-amounts { margin-top: 12px; }
+.reservation-card .reservation-amounts dt { color: #b6c9be; text-transform: none; }
+.reservation-payment-link { display: inline-flex; align-items: center; min-height: 44px; color: #6aff83; text-decoration: underline; }
+.reservation-contact { margin-top: 14px; }
+.reservation-contact a { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 4px; border-radius: 6px; font: 700 12px Manrope, sans-serif; text-decoration: none; }
+.reservation-contact svg { width: 16px; height: 16px; }
+
+@media (max-width: 800px) {
+  .reservations-page { padding: 16px 16px 28px; }
+  .reservations-page .back-button { min-height: 44px; }
+}

@@ -1,0 +1,9 @@
+/* Suspended-account page spacing; shared visual primitives are in account.css. */
+
+.account-suspended-page .verification-notice {
+  margin: 0 0 14px;
+}
+
+.account-suspended-page .verification-help {
+  margin: 0 0 12px;
+}

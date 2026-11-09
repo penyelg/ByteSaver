@@ -3,7 +3,9 @@ import { ArrowLeft } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import { getProfile } from '../../account/services/profileService'
 import { isIdentityApproved } from '../../account/utils/verification'
-import './SellListingPage.css'
+import { MobileBrand } from '../../../components/mobile/MobileNavigation'
+import '../styles/listings.css';
+import '../styles/SellListingPage.css';
 
 // Renders the sell page and manages the form used to create a hardware listing.
 export default function SellListingPage({ session, onBack }) {
@@ -178,6 +180,7 @@ export default function SellListingPage({ session, onBack }) {
 
   return (
     <main className="sell-page">
+      <MobileBrand />
       <button className="back-button" type="button" onClick={onBack}>
         <ArrowLeft aria-hidden="true" /> BACK TO MARKETPLACE
       </button>
@@ -195,6 +198,16 @@ export default function SellListingPage({ session, onBack }) {
           <div className="sell-notice sell-notice--error">{notice}</div>
         )}
         <form className="listing-form" onSubmit={saveListing}>
+          <label className="listing-form-wide">
+            Product photo
+            <input name="image" type="file" accept="image/*" onChange={updateForm} required />
+            <small>Choose one clear photo of the component.</small>
+          </label>
+          {imagePreview && (
+            <div className="image-preview listing-form-wide">
+              <img src={imagePreview} alt="Selected product preview" />
+            </div>
+          )}
           <label>
             Brand
             <input
@@ -283,24 +296,9 @@ export default function SellListingPage({ session, onBack }) {
               placeholder="Describe usage, testing, included accessories, and flaws."
             />
           </label>
-          <label className="listing-form-wide">
-            Product photo
-            <input
-              name="image"
-              type="file"
-              accept="image/*"
-              onChange={updateForm}
-              required
-            />
-            <small>Choose one clear photo of the component.</small>
-          </label>
-          {imagePreview && (
-            <div className="image-preview">
-              <img src={imagePreview} alt="Selected product preview" />
-            </div>
-          )}
+          <p className="listing-form-wide">By publishing, you agree to accept paid reservations and share your profile phone number with the buyer during their confirmed hold. The buyer pays the item price directly to you.</p>
           <button className="publish-button" type="submit" disabled={saving || loadingCategories || loadingSpecs || categories.length === 0}>
-            {loadingCategories ? "LOADING CATEGORIES…" : loadingSpecs ? "LOADING SPECS…" : saving ? "SAVING…" : "SAVE LISTING ↗"}
+            {loadingCategories ? "LOADING CATEGORIES…" : loadingSpecs ? "LOADING SPECS…" : saving ? "SAVING…" : "PUBLISH LISTING ↗"}
           </button>
         </form>
       </section>

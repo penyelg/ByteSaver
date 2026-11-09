@@ -1,5 +1,7 @@
 # ByteSaver capstone revisions
 
+The current demo uses [paid reservations](paid-reservations.md). ByteSaver collects a reservation fee, holds the listing, and reveals the consenting seller’s phone number to the buyer. The buyer pays the item price directly to the seller. The full-payment and commission model below is the earlier proposal. Adviser acceptance of the reservation fee as a substitute for a completed-sale commission is pending.
+
 ## Proposed title
 
 **ByteSaver: A Web-Based Marketplace for Pre-Owned Computers and Computer Hardware with Identity Verification and Transaction Management**

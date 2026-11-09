@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import GoogleSignInButton from './GoogleSignInButton'
 
 export default function AuthForm({ mode }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState(null)
@@ -14,6 +17,7 @@ export default function AuthForm({ mode }) {
   useEffect(() => {
     setEmail('')
     setPassword('')
+    setPasswordVisible(false)
     setName('')
     setNotice(null)
   }, [mode])
@@ -58,7 +62,7 @@ export default function AuthForm({ mode }) {
       setNotice({ type: 'error', text: result.error.message })
     } else if (mode === 'register') {
       setNotice({ type: 'success', text: 'Account created. Check your inbox if email confirmation is enabled.' })
-    } else {
+    } else if (location.pathname !== '/reservations/payment') {
       navigate('/')
     }
     setBusy(false)
@@ -66,12 +70,6 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
-      <GoogleSignInButton onClick={signInWithGoogle} busy={busy} />
-
-      <div className="auth-divider">
-        <span>OR USE EMAIL</span>
-      </div>
-
       <form onSubmit={submit} noValidate>
       {mode === 'register' && (
         <label>DISPLAY NAME
@@ -99,21 +97,23 @@ export default function AuthForm({ mode }) {
         />
         </label>
 
-      <label>PASSWORD
-        <input required minLength={6} type="password" value={password} 
-        
-        onChange={(e) => 
-        setPassword(e.target.value)} 
-        
-        placeholder="Minimum 6 characters" 
-        autoComplete={mode === 'login' ? 'current-password' : 'new-password'} 
-        />
-      </label>
+      <div className="auth-password">
+        <label>PASSWORD
+          <input required minLength={6} type={passwordVisible ? 'text' : 'password'} value={password}
+            onChange={(event) => setPassword(event.target.value)} placeholder="Minimum 6 characters"
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
+        </label>
+        <button type="button" aria-label={passwordVisible ? 'Hide password' : 'Show password'} onClick={() => setPasswordVisible(!passwordVisible)}>
+          {passwordVisible ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+        </button>
+      </div>
 
       {mode === 'login' && <button className="text-button" type="button">Forgot password?</button>}
       {notice && <div className={`notice notice--${notice.type}`} role="alert">{notice.text}</div>}
-      <button className="submit-button" type="submit" disabled={busy}>{busy ? 'CONNECTING…' : mode === 'login' ? 'ENTER MARKETPLACE' : 'CREATE ACCOUNT'}<span>↗</span></button>
+      <button className="submit-button" type="submit" disabled={busy}>{busy ? 'CONNECTING…' : mode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT'}<span>↗</span></button>
       </form>
+      <div className="auth-divider"><span>OR</span></div>
+      <GoogleSignInButton onClick={signInWithGoogle} busy={busy} />
     </>
   )
 }

@@ -1,0 +1,244 @@
+/* Overview metrics, pending-work layout, checklist, and workspace-tool cards. */
+
+.admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.admin-metric {
+  min-width: 0;
+  padding: 21px 20px 18px;
+  border: 1px solid var(--admin-line);
+  border-radius: 5px;
+  background: #0e1a14;
+}
+
+.admin-metric-primary {
+  border-color: #3c6545;
+  background: linear-gradient(115deg, #18311f, #101e16);
+}
+
+.admin-metric > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: #b6c9bc;
+  font-size: 10px;
+}
+
+.admin-metric svg {
+  color: #769b81;
+  flex-shrink: 0;
+}
+
+.admin-metric-primary svg, .admin-metric-primary > div {
+  color: #a1e7b1;
+}
+
+.admin-metric > strong {
+  display: block;
+  margin: 17px 0 10px;
+  font: 500 39px/1 'Barlow Condensed', sans-serif;
+}
+
+.admin-metric-primary > strong {
+  color: var(--admin-green);
+}
+
+.admin-metric small {
+  display: block;
+  color: #799482;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.admin-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 285px;
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-checklist {
+  padding: 24px;
+}
+
+.admin-checklist h2 {
+  max-width: 230px;
+  margin-top: 13px;
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.admin-checklist ol {
+  display: grid;
+  gap: 22px;
+  margin: 27px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-checklist li > span {
+  padding: 4px 0;
+  color: #669a74;
+  font: 9px 'DM Mono', monospace;
+}
+
+.admin-checklist li strong {
+  color: #c7dbce;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.admin-checklist li p {
+  margin: 6px 0 0;
+  color: #7c9785;
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.admin-checklist .admin-primary-button {
+  width: 100%;
+  padding-inline: 10px;
+  font-size: 10px;
+}
+
+.admin-roadmap {
+  margin-top: 30px;
+}
+
+.admin-section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 15px;
+}
+
+.admin-section-label h2 {
+  margin: 0;
+  color: #8da998;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.admin-section-label > span {
+  color: #607e6a;
+  font: 8px 'DM Mono', monospace;
+  white-space: nowrap;
+}
+
+.admin-future-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.admin-future-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 22px;
+  border: 1px dashed #2b3e32;
+  border-radius: 5px;
+  background: #0c1611;
+  color: #678673;
+}
+
+.admin-future-card > svg {
+  flex-shrink: 0;
+}
+
+.admin-future-card h3 {
+  margin: 0 0 8px;
+  color: #a9c0b0;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.admin-future-card p {
+  margin: 0;
+  color: #6d8978;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.admin-future-card > span {
+  align-self: flex-start;
+  margin-left: auto;
+  padding: 4px 6px;
+  border: 1px solid #293d30;
+  border-radius: 3px;
+  color: #6d8b78;
+  font-size: 8px;
+}
+
+@media (max-width: 1200px) {
+  .admin-overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-checklist {
+    display: none;
+  }
+
+  .admin-metrics {
+    gap: 10px;
+  }
+
+  .admin-metric {
+    padding: 17px 14px;
+  }
+
+  .admin-future-card {
+    padding: 18px 14px;
+  }
+}
+
+@media (max-width: 850px) {
+  .admin-metrics {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .admin-future-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-metric {
+    padding: 17px 13px;
+  }
+
+  .admin-metric > div {
+    font-size: 9px;
+  }
+
+  .admin-metric small {
+    font-size: 9px;
+  }
+
+  .admin-section-label h2 {
+    font-size: 11px;
+    line-height: 1.8;
+  }
+}
+
+.admin-future-card > .admin-text-button {
+  margin-left: auto;
+}
+/* Preserve the mobile card-heading override after moving overview rules out of admin.css. */
+@media (max-width: 650px) {
+  .admin-checklist h2 {
+    font-size: 15px;
+  }
+}

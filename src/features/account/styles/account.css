@@ -1,0 +1,150 @@
+/* Shared account panels, typography, buttons, feedback, and mobile panel sizing. */
+
+.profile-setup-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background-color: #07100e;
+  background-image: linear-gradient(rgba(155, 181, 167, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(155, 181, 167, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: #e9f0ed;
+}
+
+.profile-setup-panel {
+  width: min(100%, 560px);
+  padding: clamp(26px, 6vw, 54px);
+  border: 1px solid #2a3a31;
+  background: rgba(10, 17, 18, 0.96);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+}
+
+.profile-setup-panel .section-index {
+  display: block;
+  margin-bottom: 15px;
+  color: #6aff83;
+  font: 500 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.14em;
+}
+
+.profile-setup-panel h1 {
+  margin: 0;
+  color: #f2f6f4;
+  font: 600 clamp(42px, 6vw, 64px)/0.95 "Barlow Condensed",
+    sans-serif;
+  text-transform: uppercase;
+}
+
+.profile-setup-intro {
+  margin: 14px 0 28px;
+  color: #84948c;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.profile-setup-submit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 15px;
+  border: 1px solid #6aff83;
+  border-radius: 4px;
+  background: #6aff83;
+  color: #07100e;
+  cursor: pointer;
+  font: 700 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.06em;
+}
+
+.profile-setup-submit span {
+  font-size: 18px;
+}
+
+.profile-setup-submit:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.profile-setup-signout {
+  display: block;
+  margin: 20px auto 0;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: #84948c;
+  cursor: pointer;
+  font: 11px "DM Mono",
+    monospace;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.profile-setup-signout:hover {
+  color: #6aff83;
+}
+
+.profile-setup-error {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-left: 2px solid #ff8277;
+  background: rgba(255, 130, 119, 0.07);
+  color: #ffb9b2;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.verification-help {
+  color: #9bac9f;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.verification-notice {
+  padding: 14px;
+  border: 1px solid #2a3a31;
+  background: #0e2017;
+  color: #b0c5b7;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.verification-secondary {
+  padding: 12px 15px;
+  border: 1px solid #496050;
+  border-radius: 4px;
+  background: transparent;
+  color: #c4dbcc;
+  font: 11px "DM Mono",
+    monospace;
+  cursor: pointer;
+}
+
+.verification-secondary:hover {
+  border-color: #6aff83;
+}
+
+.verification-secondary:focus-visible, .profile-setup-submit:focus-visible, .profile-setup-signout:focus-visible {
+  outline: 2px solid #6aff83;
+  outline-offset: 3px;
+}
+
+.verification-secondary:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+@media (max-width: 420px) {
+  .profile-setup-shell {
+    padding: 14px;
+  }
+
+  .profile-setup-panel {
+    padding: 26px 20px;
+  }
+}

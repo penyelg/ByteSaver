@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { getProfile } from '../../account/services/profileService';
+import { isIdentityApproved } from '../../account/utils/verification';
 
 export default function useSession({ loadCart, clearCart }) {
   // undefined: restoring the session; null: signed out.
@@ -29,7 +30,7 @@ export default function useSession({ loadCart, clearCart }) {
           if (!active || request !== generation) return;
           setProfile(data || null)
           setProfileError(error?.message || '')
-          if (!error && data?.verification?.status === 'approved') await loadCart(nextSession.user.id)
+          if (!error && isIdentityApproved(data)) await loadCart(nextSession.user.id)
           else clearCart()
         } else clearCart()
       } catch (error) {
@@ -69,9 +70,18 @@ export default function useSession({ loadCart, clearCart }) {
     if (currentUserId.current === userId && !result.error && result.data) {
       setProfile(result.data);
       setProfileError('');
-      if (result.data.verification?.status === 'approved') await loadCart(userId);
+      if (isIdentityApproved(result.data)) await loadCart(userId);
+      else clearCart();
     }
     return result;
-  }, [loadCart]);
+  }, [loadCart, clearCart]);
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    const checkAccess = () => { if (document.visibilityState === 'visible') void refreshProfile(); };
+    const interval = setInterval(checkAccess, 30000);
+    window.addEventListener('focus', checkAccess);
+    document.addEventListener('visibilitychange', checkAccess);
+    return () => { clearInterval(interval); window.removeEventListener('focus', checkAccess); document.removeEventListener('visibilitychange', checkAccess); };
+  }, [session?.user?.id, refreshProfile]);
   return { session, profile, profileError, completeProfile, refreshProfile };
 }

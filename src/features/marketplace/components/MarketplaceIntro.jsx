@@ -1,4 +1,6 @@
 import React from 'react';
+import '../styles/marketplace.css';
+import '../styles/MarketplaceIntro.css';
 
 export default function MarketplaceIntro({ onSell }) {
   return (

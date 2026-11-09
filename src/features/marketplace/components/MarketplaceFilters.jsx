@@ -1,5 +1,7 @@
 import React from 'react';
 import { CircuitBoard, Cpu, HardDrive, Keyboard, LayoutGrid, MemoryStick, Monitor, Package, Zap } from 'lucide-react';
+import '../styles/marketplace.css';
+import '../styles/MarketplaceFilters.css';
 
 const categoryIcons = {
   "All hardware": LayoutGrid,
@@ -18,9 +20,9 @@ function CategoryIcon({ category }) {
   return <Icon aria-hidden="true" strokeWidth={1.8} />;
 }
 
-export default function MarketplaceFilters({ categoryNames, activeCategory, setActiveCategory, selectedConditions, toggleCondition, maxPrice, setMaxPrice, resetFilters }) {
+export default function MarketplaceFilters({ categoryNames, activeCategory, setActiveCategory, selectedConditions, toggleCondition, maxPrice, setMaxPrice, resetFilters, filtersOpen }) {
   return (
-    <aside className="category-rail">
+    <aside className={`category-rail${filtersOpen ? ' category-rail--expanded' : ''}`}>
       <div className="filter-heading">
         <span>☷ &nbsp; FILTER HARDWARE</span>
         <button type="button" onClick={resetFilters}>
@@ -32,7 +34,9 @@ export default function MarketplaceFilters({ categoryNames, activeCategory, setA
         {categoryNames.map((category) => (
           <button
             key={category}
+            type="button"
             className={activeCategory === category ? "active" : ""}
+            aria-pressed={activeCategory === category}
             onClick={() => setActiveCategory(category)}
           >
             <CategoryIcon category={category} />
@@ -40,6 +44,7 @@ export default function MarketplaceFilters({ categoryNames, activeCategory, setA
           </button>
         ))}
       </div>
+      <div id="marketplace-filters" className="marketplace-filter-fields">
       <div className="filter-group">
         <span className="rail-label">CONDITION GRADE</span>
         <label>
@@ -90,6 +95,7 @@ export default function MarketplaceFilters({ categoryNames, activeCategory, setA
           <small>₱1,000</small>
           <small>₱150,000+</small>
         </div>
+      </div>
       </div>
     </aside>
   );

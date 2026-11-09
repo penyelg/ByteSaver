@@ -1,0 +1,249 @@
+/* Marketplace page layout, browse toolbar, listing grid, and loading/empty states. */
+
+.mobile-browse-tools, .mobile-browse-title { display: none; }
+
+.marketplace-shell {
+  min-height: 100svh;
+  background-color: #07100e;
+  background-image: linear-gradient(rgba(155, 181, 167, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(155, 181, 167, .035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: #e9f0ed;
+}
+
+.sign-out-button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #ffaaa4;
+  cursor: pointer;
+  font: 500 11px 'DM Mono', monospace;
+  text-align: left;
+  text-transform: uppercase;
+  transition: background .2s, color .2s;
+}
+
+.sign-out-button:hover {
+  background: rgba(255, 120, 110, .09);
+  color: #ffd0ca;
+}
+
+.sign-out-button span {
+  font-size: 16px;
+}
+
+.marketplace-body {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  min-height: calc(100svh - 70px);
+}
+
+.marketplace-content {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 58px 54px 80px;
+  margin: 0;
+}
+
+.browse-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 66px;
+  padding: 12px 16px;
+  border: 1px solid #263444;
+  border-radius: 15px;
+  background: #0c131b;
+}
+
+.active-deals, .sort-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #91a0b4;
+  font: 10px 'DM Mono', monospace;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.active-deals strong {
+  padding: 5px 9px;
+  border: 1px solid #3a4b60;
+  border-radius: 4px;
+  background: #182434;
+  color: #e9f0ed;
+}
+
+.active-deals i {
+  color: #00f27b;
+  font-style: normal;
+}
+
+.active-deals b {
+  color: #00f27b;
+  font-weight: 500;
+}
+
+.sort-control select {
+  min-width: 198px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #3a4b60;
+  border-radius: 8px;
+  background: #0c131b;
+  color: #d5dee8;
+  font: 500 11px 'DM Mono', monospace;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(300px, 100%);
+  border-bottom: 1px solid #2a3a31;
+  color: #6aff83;
+}
+
+.search-box input {
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+}
+
+.search-box input:focus {
+  box-shadow: none;
+}
+
+.marketplace-state, .marketplace-empty {
+  padding: 70px 24px;
+  border: 1px dashed #2a3a31;
+  color: #52635a;
+  text-align: center;
+  font: 11px 'DM Mono', monospace;
+}
+
+.marketplace-state--error {
+  color: #ff9b9b;
+  border-color: #734444;
+}
+
+.marketplace-empty h2 {
+  margin: 18px 0 10px;
+  color: #dbe6df;
+  font: 600 36px 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+}
+
+.marketplace-empty p {
+  margin: 0;
+  color: #82948a;
+  font: 13px Manrope, sans-serif;
+}
+
+.listing-grid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  align-items: stretch;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 800px) {
+  .marketplace-body {
+    display: block;
+  }
+
+  .marketplace-content {
+    padding: 36px 18px 54px;
+  }
+}
+
+@media (min-width: 801px) {
+  .marketplace-body {
+    width: min(1220px, calc(100% - 48px));
+    grid-template-columns: 256px minmax(0, 1fr);
+    gap: 32px;
+    margin: 0 auto;
+  }
+
+  .marketplace-content {
+    padding: 24px 0 80px;
+  }
+}
+
+@media (max-width: 800px) {
+  .marketplace-body {
+    width: 100%;
+  }
+
+  .marketplace-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .browse-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .active-deals, .sort-control {
+    justify-content: space-between;
+  }
+
+  .sort-control select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 801px) {
+  .marketplace-body {
+    margin-top: 32px;
+  }
+
+  .marketplace-content {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 800px) {
+  .marketplace-body {
+    min-height: auto;
+    margin-top: 12px;
+  }
+
+  .mobile-browse-tools { display: flex; gap: 8px; padding: 12px 16px 0; }
+  .mobile-browse-tools label, .mobile-browse-tools button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 46px;
+    border: 1px solid #344a3d;
+    border-radius: 8px;
+    background: #0e231b;
+    color: #c8d9cf;
+  }
+  .mobile-browse-tools label { flex: 1; min-width: 0; padding: 0 11px; }
+  .mobile-browse-tools svg { flex: none; width: 18px; height: 18px; }
+  .mobile-browse-tools button { width: 46px; justify-content: center; cursor: pointer; }
+  .mobile-browse-tools button[aria-expanded='true'] { color: #6aff83; border-color: #6aff83; }
+  .mobile-browse-tools input { width: 100%; min-width: 0; min-height: 44px; padding: 0; border: 0; background: transparent; color: #e9f0ed; font: 16px Manrope, sans-serif; }
+  .marketplace-content { padding: 14px 16px 28px; }
+  .mobile-browse-title { display: block; margin: 0 0 10px; font: 700 28px/1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+  .marketplace-content .browse-toolbar { min-height: 0; padding: 6px 0; border: 0; background: transparent; }
+  .marketplace-content .active-deals { display: none; }
+  .marketplace-content .sort-control select { flex: initial; min-width: 0; height: 44px; }
+  .listing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 8px; }
+}
