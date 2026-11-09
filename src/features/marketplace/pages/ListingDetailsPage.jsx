@@ -1,6 +1,8 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
-import './ListingDetailsPage.css'
+import ReserveListing from '../../reservations/ReserveListing'
+import { MobileBrand } from '../../../components/mobile/MobileNavigation'
+import '../styles/ListingDetailsPage.css';
 
 export default function ListingDetailsPage({ listing, onBack, onAddToCart }) {
   const [cartMessage, setCartMessage] = React.useState('')
@@ -17,7 +19,8 @@ export default function ListingDetailsPage({ listing, onBack, onAddToCart }) {
     else setCartMessage('Added to your cart')
   }
 
-  return <main className="details-page">
+  return <main className="details-page product-details-page">
+    <MobileBrand />
     <button className="back-button" type="button" onClick={onBack}><ArrowLeft aria-hidden="true" /> BACK TO MARKETPLACE</button>
     <section className="details-layout">
       <div className="details-media-column">
@@ -32,7 +35,8 @@ export default function ListingDetailsPage({ listing, onBack, onAddToCart }) {
         <div className="details-heading-row"><span className="details-category">{listing.category || 'Hardware'}</span><span className="details-condition-badge">{listing.condition || 'Pre-owned'}</span></div>
         <h1>{title}</h1>
         <div className="details-price-row"><strong className="details-price">{price}</strong><span className="details-trust">● TECH VERIFIED</span></div>
-        <button className="details-add-cart" type="button" onClick={handleAddToCart}>ADD TO CART <span>↗</span></button>
+        <ReserveListing key={listing.id} listingId={listing.id} />
+        <button className="details-add-cart details-save-item" type="button" onClick={handleAddToCart}>ADD TO CART <span>↗</span></button>
         {cartMessage && <div className="details-cart-message">{cartMessage}</div>}
         <div className="details-facts"><div><span>CONDITION</span><strong>{listing.condition || 'Pre-owned'}</strong></div><div><span>CATEGORY</span><strong>{listing.category || 'Hardware'}</strong></div></div>
         <div className="details-section"><h2>Description</h2><p>{listing.description || 'No description provided.'}</p></div>

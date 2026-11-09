@@ -1,0 +1,47 @@
+.mobile-tabs, .mobile-brand { display: none; }
+
+@media (max-width: 800px) {
+  .member-shell--tabs {
+    --mobile-tab-height: calc(66px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--mobile-tab-height);
+    background: #07100e;
+  }
+
+  .member-shell--tabs > main { min-height: calc(100svh - var(--mobile-tab-height)); }
+
+  .mobile-tabs {
+    position: fixed;
+    z-index: 10;
+    inset: auto 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    min-height: var(--mobile-tab-height);
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #2a3a31;
+    background: #0c1a15;
+  }
+
+  .mobile-tabs a {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 5px;
+    min-height: 48px;
+    border-radius: 6px;
+    color: #baccc2;
+    font: 600 11px Manrope, sans-serif;
+    text-decoration: none;
+  }
+
+  .mobile-tabs svg { width: 22px; height: 22px; }
+  .mobile-tabs a[aria-current] { color: #6aff83; background: #11291e; }
+
+  .mobile-brand {
+    display: block;
+    width: 152px;
+    height: 40px;
+    object-fit: contain;
+    object-position: left center;
+    margin-bottom: 10px;
+  }
+}

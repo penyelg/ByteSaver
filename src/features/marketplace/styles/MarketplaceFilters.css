@@ -1,0 +1,202 @@
+/* Category rail, condition filters, and price controls. */
+
+.category-rail {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  height: calc(100svh - 106px);
+  max-height: calc(100svh - 106px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid #263444;
+  border-radius: 14px;
+  background: #0c131b;
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 34px;
+  color: #c5d0dd;
+  font: 700 11px 'DM Mono', monospace;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.filter-heading span:first-child {
+  color: #c5d0dd;
+}
+
+.filter-heading span:first-letter {
+  color: #00f27b;
+}
+
+.filter-heading button {
+  border: 0;
+  background: transparent;
+  color: #00f27b;
+  cursor: pointer;
+  font: 700 10px 'DM Mono', monospace;
+}
+
+.category-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.category-list button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #91a0b4;
+  cursor: pointer;
+  font: 600 12px 'DM Mono', monospace;
+  text-align: left;
+  transition: color .2s, background .2s, border-color .2s, transform .2s;
+}
+
+.category-list button svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  color: #557064;
+  transition: color .2s, transform .2s;
+}
+
+.category-list button:hover, .category-list button.active {
+  color: #00f27b;
+  background: rgba(0, 242, 123, .1);
+}
+
+.category-list button:hover {
+  transform: translateX(2px);
+}
+
+.category-list button:hover svg, .category-list button.active svg {
+  color: #6aff83;
+}
+
+.filter-group {
+  display: grid;
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid #263444;
+}
+
+.filter-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c5d0dd;
+  font: 11px 'DM Mono', monospace;
+  line-height: 1.4;
+}
+
+.filter-group input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  accent-color: #00f27b;
+}
+
+.price-filter {
+  display: block;
+  position: relative;
+}
+
+.price-filter .rail-label {
+  display: inline-block;
+}
+
+.price-filter strong {
+  float: right;
+  color: #00f27b;
+  font: 700 11px 'DM Mono', monospace;
+}
+
+.price-filter input[type="range"] {
+  width: 100%;
+  margin: 18px 0 8px;
+  accent-color: #00f27b;
+}
+
+.price-filter div {
+  display: flex;
+  justify-content: space-between;
+  color: #68788d;
+  font: 9px 'DM Mono', monospace;
+}
+
+@media (max-width: 800px) {
+  .category-rail {
+    position: sticky;
+    top: 72px;
+    z-index: 4;
+    height: auto;
+    max-height: none;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 16px 18px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(155, 181, 167, .12);
+  }
+
+  .category-list {
+    display: flex;
+    margin-top: 0;
+  }
+
+  .category-list button {
+    white-space: nowrap;
+  }
+
+  .category-rail {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .category-list {
+    display: grid;
+  }
+}
+
+@media (min-width: 801px) {
+  .category-rail {
+    top: 108px;
+  }
+
+  .category-rail {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 800px) {
+  .category-rail { position: static; padding: 0 16px; border: 0; background: transparent; }
+  .category-rail > .rail-label, .category-rail .filter-heading, .marketplace-filter-fields { display: none; }
+  .category-rail .category-list { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: thin; }
+  .category-rail .category-list button { flex: none; width: auto; min-height: 44px; padding: 0 12px; border-radius: 6px; }
+  .category-rail .category-list svg { display: none; }
+  .category-rail .category-list button.active { color: #07100e; background: #6aff83; }
+  .category-rail--expanded .filter-heading { display: flex; margin: 0; padding: 8px 0; }
+  .category-rail--expanded .marketplace-filter-fields { display: block; padding: 0 14px 14px; border: 1px solid #2a3a31; border-radius: 8px; background: #0e231b; }
+  .marketplace-filter-fields .filter-group { margin-top: 10px; padding-top: 10px; }
+  .marketplace-filter-fields label { min-height: 36px; }
+}

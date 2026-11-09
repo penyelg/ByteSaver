@@ -1,0 +1,9 @@
+/* Pending-review page spacing; shared visual primitives are in account.css. */
+
+.verification-pending-page .verification-notice {
+  margin: 0 0 14px;
+}
+
+.verification-pending-page .verification-help {
+  margin: 0 0 12px;
+}

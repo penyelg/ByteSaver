@@ -1,0 +1,134 @@
+/* Listing form primitives extracted from the former marketplace-wide stylesheet. */
+
+.sell-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(2, 8, 6, .78);
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+
+.sell-panel {
+  width: min(760px, 100%);
+  padding: 32px;
+  border: 1px solid #2a3a31;
+  background: linear-gradient(145deg, rgba(106, 255, 131, .06), #0a1512 45%);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+}
+
+.sell-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.sell-panel-heading h2 {
+  margin: 10px 0 8px;
+  color: #e9f0ed;
+  font-size: clamp(26px, 4vw, 42px);
+}
+
+.sell-panel-heading p {
+  max-width: 540px;
+  color: #82948a;
+}
+
+.sell-close {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #2a3a31;
+  background: transparent;
+  color: #6aff83;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.listing-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.listing-form label {
+  display: grid;
+  gap: 8px;
+  color: #82948a;
+  font: 10px 'DM Mono', monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.listing-form input, .listing-form select, .listing-form textarea {
+  width: 100%;
+  border: 1px solid #2a3a31;
+  outline: 0;
+  background: #07100e;
+  color: #e9f0ed;
+  padding: 13px;
+  font: 14px Manrope, sans-serif;
+}
+
+.listing-form input:focus, .listing-form select:focus, .listing-form textarea:focus {
+  border-color: #6aff83;
+}
+
+.listing-form textarea {
+  resize: vertical;
+}
+
+.listing-form-wide {
+  grid-column: 1 / -1;
+}
+
+.image-preview {
+  width: min(100%, 360px);
+  height: 220px;
+  aspect-ratio: 4 / 3;
+  border: 1px solid #2a3a31;
+  overflow: hidden;
+  background: #07100e;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
+
+.publish-button {
+  justify-self: start;
+  border: 1px solid #6aff83;
+  background: #6aff83;
+  color: #07100e;
+  cursor: pointer;
+  padding: 13px 18px;
+  font: 700 10px 'DM Mono', monospace;
+}
+
+.sell-notice {
+  margin-top: 20px;
+  border-left: 2px solid #6aff83;
+  padding: 10px 12px;
+  color: #b6ffc0;
+  font: 12px 'DM Mono', monospace;
+}
+
+@media (max-width: 800px) {
+  .sell-panel {
+    padding: 22px 18px;
+  }
+
+  .listing-form {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-form-wide {
+    grid-column: auto;
+  }
+}

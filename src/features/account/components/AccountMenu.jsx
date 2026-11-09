@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { UserRound } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
+import '../styles/AccountMenu.css';
 
+// Show the signed-in account summary, optional admin navigation, and sign-out action.
 export default function AccountMenu({ session, onReviewIdentities }) {
   const [accountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef(null);
-  // used as action event listener for account menu button
+
+  // Close on outside clicks or Escape, and remove both document listeners when the component unmounts.
   useEffect(() => {
     const closeAccountMenu = (event) => {
       if (!accountRef.current?.contains(event.target)) setAccountOpen(false);
@@ -24,14 +28,18 @@ export default function AccountMenu({ session, onReviewIdentities }) {
     };
   }, []);
 
+  // Providers supply different metadata fields; fall back to the email prefix or a generic account label.
   const displayName =
     session.user.user_metadata?.display_name ||
     session.user.email?.split("@")[0] ||
     "member";
+
   const avatarUrl =
     session.user.user_metadata?.avatar_url ||
     session.user.user_metadata?.picture ||
     session.user.user_metadata?.image_url;
+    
+  // Close the dropdown before ending the session so it does not remain visible during navigation.
   const signOut = async () => {
     setAccountOpen(false);
     await supabase?.auth.signOut();
@@ -72,6 +80,8 @@ export default function AccountMenu({ session, onReviewIdentities }) {
             </span>
           </div>
           <div className="account-divider" />
+          <Link className="sign-out-button" role="menuitem" to="/listings/manage" onClick={() => setAccountOpen(false)}>Manage Listings</Link>
+          <Link className="sign-out-button" role="menuitem" to="/reservations" onClick={() => setAccountOpen(false)}>My Reservations</Link>
           {onReviewIdentities && <button className="sign-out-button" type="button" role="menuitem" onClick={() => { setAccountOpen(false); onReviewIdentities(); }}>Admin dashboard</button>}
           <button
             className="sign-out-button"

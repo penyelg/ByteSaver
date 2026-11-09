@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { firstValue } from '../utils/listingUtils';
+import '../styles/marketplace.css';
+import '../styles/ListingCard.css';
 
 export default function ListingCard({ listing, onView }) {
   const brand = firstValue(listing, ["brand"], "");

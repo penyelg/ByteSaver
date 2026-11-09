@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
+import '../styles/CartDrawer.css';
 
 export default function CartDrawer({ cartItems, onRemoveFromCart, onClose }) {
   return (
@@ -24,7 +25,7 @@ export default function CartDrawer({ cartItems, onRemoveFromCart, onClose }) {
                 </div>;
               })}
             </div>
-            <div className="cart-drawer-note">Checkout and seller contact will be available in the next step.</div>
+            <div className="cart-drawer-note">Open a listing to check availability and reserve it.</div>
           </>
         )}
       </aside>

@@ -4,7 +4,7 @@ import AuthForm from "../components/AuthForm";
 import AuthModeSwitch from "../components/AuthModeSwitch";
 import PixelSnow from "../../../components/visuals/PixelSnow";
 import BrandPanel from "../../../components/brand/BrandPanel";
-import "./AuthPage.css";
+import '../styles/AuthPage.css';
 
 export default function AuthPage() {
   const [params] = useSearchParams();

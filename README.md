@@ -2,7 +2,7 @@
 
 A React marketplace for pre-owned computer hardware, built with Vite and Supabase. See [PRODUCT.md](PRODUCT.md) for the product brief and [DESIGN.md](DESIGN.md) for visual guidance.
 
-The revised capstone scope and proposed academic title are documented in [docs/capstone-revisions.md](docs/capstone-revisions.md). Required ID submission and administrator approval are implemented; see [the verification setup and access rules](docs/identity-verification.md). Transaction commissions, checkout, payment processing, and tax processing remain target requirements.
+The proposed academic scope is documented in [docs/capstone-revisions.md](docs/capstone-revisions.md). The current demo uses [paid listing reservations](docs/paid-reservations.md). Required ID submission and administrator approval are covered in [the verification setup and access rules](docs/identity-verification.md).
 
 ## Local setup
 
@@ -50,7 +50,7 @@ Keep feature-specific components, hooks, services, and utilities inside their fe
 
 `App` owns page selection, selected listing, and the identity-approval gate. The auth hook restores the session, reads the profile/verification/reviewer access, and loads the cart for approved accounts. The cart hook owns saved items and preserves the add/remove callback results. Profile, verification, and cart operations live in their feature services; marketplace fetching lives in its hook, and filtering/sorting in its utilities.
 
-Styles remain beside their existing pages and visual components. The marketplace page continues to load the stylesheet used by its extracted sections, including the account menu and cart drawer. `node_modules/` and `dist/` are generated and ignored by Git.
+Feature styles live in each feature's `styles/` directory. Pages and extracted components import their own stylesheets; shared feature rules live in `account.css`, `admin.css`, `marketplace.css`, or `listings.css`. The pending-verification and suspended-account pages each have their own stylesheet alongside the shared account theme. The account menu and cart drawer own their styles instead of relying on marketplace-page CSS. Global resets and fonts remain in `src/styles/global.css`, and standalone shared visual components keep their adjacent CSS. See [stylesheet ownership](docs/frontend-styles.md). `node_modules/` and `dist/` are generated and ignored by Git.
 
 ## Database prerequisites and implementation status
 
@@ -58,10 +58,10 @@ This repository does **not** currently bootstrap a complete Supabase project. It
 
 Review and apply the SQL files in filename order against a compatible database: barangay definitions/seed, profile fields/policies, then categories/specification definitions and listing category references. Do not assume that these files create the baseline tables, storage bucket, or every policy required by the app. No migration runs automatically on app startup.
 
-Implemented app flows include authentication, required profile/ID setup, private ID storage, administrator review and resubmission, approval-gated marketplace access, listing creation with category-driven specifications, and a persistent saved cart. Phone ownership is not OTP-verified. The identity migration is applied to the connected project, and existing accounts need approval too. The broader orders, payments, reporting, and listing moderation behavior in [docs/database-schema.md](docs/database-schema.md) is a target design. Checkout is not implemented.
+Implemented app flows include authentication, required profile/ID setup, private ID storage, administrator review and resubmission, approval-gated marketplace access, listing creation with category-driven specifications, and a persistent saved cart. Phone ownership is not OTP-verified. The identity migration is applied to the connected project, and existing accounts need approval too. Reservation checkout requires the [Xendit Test Mode setup](docs/paid-reservations.md). The broader orders, payments, reporting, and listing moderation behavior in [docs/database-schema.md](docs/database-schema.md) is a target design.
 
 Before deploying, validate the actual database policies and migration state separately. A successful frontend build does not confirm database readiness.
 
 ## Administrator workspace
 
-Authorized administrators have a separate dashboard at `/admin`, with identity reviews at `/admin/verifications`. The overview displays live verification counts and the oldest pending requests. User management and listing moderation are marked as planned and have no active controls yet. See [admin dashboard notes](docs/admin-dashboard.md) for the feature structure and routing. Production hosting must serve `index.html` for these client-side routes.
+Authorized administrators have a separate dashboard at `/admin`, with identity reviews at `/admin/verifications` and user management at `/admin/users`. The overview displays live verification counts and the oldest pending requests. User management includes search, account details, and audited suspension/reactivation; its database migration is applied to the connected ByteSaver project. See [user management setup and access rules](docs/user-management.md). Listing moderation remains planned. See [admin dashboard notes](docs/admin-dashboard.md) for the feature structure and routing. Production hosting must serve `index.html` for these client-side routes.

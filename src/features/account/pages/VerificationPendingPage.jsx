@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
-import './ProfileSetupPage.css';
+import '../styles/account.css';
+import '../styles/VerificationPendingPage.css';
 
+// Keep applicants informed while their submitted ID awaits an administrator’s decision.
 export default function VerificationPendingPage({ verification, onRefresh, onReviewIdentities }) {
   const [checking, setChecking] = useState(false);
   const [message, setMessage] = useState('');
+  // Recheck through the parent; its updated profile determines whether this screen is still needed.
   const refresh = async () => {
     setChecking(true);
     try {
@@ -13,12 +16,13 @@ export default function VerificationPendingPage({ verification, onRefresh, onRev
     } catch { setMessage('Unable to check your status. Please try again.'); }
     finally { setChecking(false); }
   };
+  // Also recheck when the user returns to this tab, and remove the listener on cleanup.
   useEffect(() => {
     const checkOnFocus = () => { if (document.visibilityState === 'visible') onRefresh(); };
     document.addEventListener('visibilitychange', checkOnFocus);
     return () => document.removeEventListener('visibilitychange', checkOnFocus);
   }, [onRefresh]);
-  return <main className="profile-setup-shell"><section className="profile-setup-panel">
+  return <main className="profile-setup-shell verification-pending-page"><section className="profile-setup-panel">
     <span className="section-index">ACCOUNT VERIFICATION / PENDING</span>
     <h1>Your ID is in review.</h1>
     <p className="profile-setup-intro">Your details were submitted successfully. An administrator will review your ID before your account can buy or sell.</p>

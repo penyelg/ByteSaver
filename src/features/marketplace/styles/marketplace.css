@@ -1,0 +1,14 @@
+/* Small text utilities shared by marketplace sections. */
+
+.section-index {
+  display: block;
+  color: #6aff83;
+  font: 500 10px 'DM Mono', monospace;
+  letter-spacing: .14em;
+}
+
+.rail-label, .toolbar-label, .empty-code {
+  color: #52635a;
+  font: 500 10px 'DM Mono', monospace;
+  letter-spacing: .14em;
+}

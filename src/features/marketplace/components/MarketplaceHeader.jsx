@@ -1,9 +1,12 @@
 import React from 'react';
-import { Heart, LayoutGrid, Plus, Search, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { ClipboardList, Heart, LayoutGrid, Plus, Search, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import wordmark from '../../../assets/bytesaver-wordmark-primary.png';
 import AccountMenu from '../../account/components/AccountMenu';
+import '../styles/marketplace.css';
+import '../styles/MarketplaceHeader.css';
 
-export default function MarketplaceHeader({ session, cartItems, onSell, onOpenCart, onReviewIdentities }) {
+export default function MarketplaceHeader({ session, cartItems, onSell, onOpenCart, onReviewIdentities, query, onSearch }) {
   return (
     <header className="marketplace-header">
       <a
@@ -37,23 +40,26 @@ export default function MarketplaceHeader({ session, cartItems, onSell, onOpenCa
           <span>Sell hardware</span>
           <small>02</small>
         </a>
-        <a href="#verified">
+        <Link to="/listings/manage">
           <span className="nav-icon">
-            <ShieldCheck aria-hidden="true" />
+            <ClipboardList aria-hidden="true" />
           </span>
-          <span>Tech verified</span>
-        </a>
+          <span>Manage Listings</span>
+        </Link>
       </nav>
       <div className="header-actions">
         <label className="header-search">
           <Search aria-hidden="true" />
           <input
+            type="search"
+            value={query}
+            onChange={(event) => onSearch(event.target.value)}
             placeholder="Search GPUs, CPUs, DDR5"
             aria-label="Search GPUs, CPUs, DDR5"
           />
         </label>
         <button
-          className="header-icon-button"
+          className="header-icon-button header-favorites-button"
           type="button"
           aria-label="Favorites"
         >

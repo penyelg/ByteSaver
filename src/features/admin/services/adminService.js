@@ -5,6 +5,10 @@ export function getReviewQueue(status) {
     .order('submitted_at', { ascending: status === 'pending_review' }).limit(100);
 }
 
+export function getReviewSubmission(id) {
+  return supabase.from('identity_submissions').select('*').eq('id', id).maybeSingle();
+}
+
 export function getIdentityPhoto(path) {
   return supabase.storage.from('identity-documents').createSignedUrl(path, 120);
 }

@@ -1,0 +1,54 @@
+.manage-listing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.sell-page-panel > .manage-listing-actions {
+  margin-top: 24px;
+}
+
+.manage-listings {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin-top: 24px;
+  list-style: none;
+}
+
+.manage-listings li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #2a3a31;
+  border-radius: 8px;
+}
+
+.manage-listings img {
+  width: 64px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.manage-listings li > div {
+  flex: 1;
+  min-width: 120px;
+  overflow-wrap: anywhere;
+}
+
+.manage-listings p {
+  margin: 4px 0 0;
+  color: #a6b8ad;
+  font-size: 12px;
+}
+
+@media (max-width: 520px) {
+  .manage-listings li { gap: 10px; background: #0e231b; }
+  .manage-listings li > div { min-width: 0; }
+  .manage-listings li button { padding: 4px; }
+  .manage-listing-actions { align-items: stretch; }
+}

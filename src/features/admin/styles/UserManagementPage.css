@@ -1,0 +1,240 @@
+/* User directory, filters, status badges, account details, and access history. */
+
+.admin-users {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-user-filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 0 22px 22px;
+}
+
+.admin-user-filters label {
+  display: grid;
+  gap: 8px;
+  color: #adc8b6;
+  font-size: 11px;
+}
+
+.admin-user-search {
+  flex: 1 1 280px;
+}
+
+.admin-user-search > div {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-user-filters input, .admin-user-filters select {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid #314c39;
+  border-radius: 4px;
+  background: #0b1610;
+  color: #d5e9dc;
+  font: 12px Manrope, sans-serif;
+}
+
+.admin-user-filters input {
+  flex: 1;
+  width: 100%;
+}
+
+.admin-user-filters input:focus-visible {
+  outline: 2px solid var(--admin-green);
+  outline-offset: 3px;
+}
+
+.admin-users-table tr.is-selected {
+  background: #193122;
+}
+
+.admin-applicant .admin-role-label {
+  margin-left: 8px;
+  color: #8cdd9f;
+}
+
+.admin-user-status--active, .admin-user-status--approved {
+  border-color: #365f41;
+  background: #142e1d;
+  color: #9de3af;
+}
+
+.admin-user-status--suspended, .admin-user-status--rejected {
+  border-color: #75443c;
+  background: #2a1b16;
+  color: #efb4a7;
+}
+
+.admin-user-status--not_submitted {
+  border-color: #3c4c43;
+  background: #17231c;
+  color: #a4b7aa;
+}
+
+.admin-user-pagination {
+  align-items: center;
+  font-size: 10px;
+}
+
+.admin-user-pagination > div {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-user-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin-user-detail-heading h2 {
+  margin: 0;
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+
+.admin-user-detail-heading h2:focus {
+  outline: none;
+}
+
+.admin-user-detail .admin-review-form {
+  border-top: 1px solid var(--admin-line);
+  padding-top: 24px;
+  gap: 14px;
+}
+
+.admin-user-detail h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.admin-user-detail .admin-review-form > p {
+  margin: 0;
+}
+
+.admin-workspace .admin-danger-button {
+  color: #ffc0b5;
+  border-color: #97594d;
+  background: #301e19;
+}
+
+.admin-access-history {
+  border-top: 1px solid var(--admin-line);
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.admin-access-history ol {
+  display: grid;
+  gap: 16px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-access-history li {
+  border-left: 2px solid #365f41;
+  padding: 0 0 0 14px;
+}
+
+.admin-access-history li > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-access-history time, .admin-access-history small {
+  font-size: 10px;
+  color: var(--admin-muted);
+}
+
+.admin-access-history p {
+  margin: 10px 0;
+  color: #c6dece;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+  .admin-user-filters {
+    padding: 0 16px 18px;
+    gap: 12px;
+  }
+
+  .admin-user-filters label {
+    flex: 1 1 100%;
+  }
+
+  .admin-user-detail-heading h2 {
+    font-size: 19px;
+  }
+
+  .admin-user-pagination {
+    padding: 14px 16px;
+  }
+
+  .admin-users-table {
+    white-space: normal;
+  }
+
+  .admin-users-table thead {
+    display: none;
+  }
+
+  .admin-users-table tbody {
+    display: block;
+  }
+
+  .admin-users-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid var(--admin-line);
+  }
+
+  .admin-users-table td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .admin-users-table td:first-child {
+    grid-column: 1 / -1;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-users-table td:nth-child(2)::before, .admin-users-table td:nth-child(3)::before {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--admin-muted);
+    font-size: 9px;
+  }
+
+  .admin-users-table td:nth-child(2)::before {
+    content: 'Verification';
+  }
+
+  .admin-users-table td:nth-child(3)::before {
+    content: 'Account access';
+  }
+
+  .admin-users-table td:nth-child(4) {
+    display: none;
+  }
+
+  .admin-users-table td:last-child {
+    grid-column: 1 / -1;
+  }
+}

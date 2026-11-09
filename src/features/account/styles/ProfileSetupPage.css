@@ -1,0 +1,477 @@
+/* Profile setup fields, stepper, photo preview, and viewport-bounded Identification layout. */
+
+.profile-setup-page .verification-notice {
+  margin: 0 0 14px;
+}
+
+.profile-setup-page .verification-help {
+  margin: 0 0 12px;
+}
+
+.profile-setup-form {
+  display: grid;
+  gap: 20px;
+}
+
+.profile-setup-form label {
+  display: grid;
+  gap: 8px;
+  color: #8fa499;
+  font: 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-setup-form input, .profile-setup-form select {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #2a3a31;
+  border-radius: 5px;
+  outline: 0;
+  background: #040d0b;
+  color: #e9f0ed;
+  font: 13px Manrope,
+    sans-serif;
+}
+
+.profile-setup-form input:focus, .profile-setup-form select:focus {
+  border-color: #6aff83;
+  box-shadow: 0 0 0 3px rgba(106, 255, 131, 0.08);
+}
+
+.profile-setup-form input::placeholder {
+  color: #4f6559;
+}
+
+.profile-setup-form label small {
+  color: #71847a;
+  font: 11px Manrope,
+    sans-serif;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
+}
+
+.profile-setup-form fieldset {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 20px 0 0;
+  border: 0;
+  border-top: 1px solid #2a3a31;
+}
+
+.profile-setup-form legend {
+  padding: 0 12px 0 0;
+  color: #6aff83;
+  font: 10px "DM Mono",
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.profile-setup-form .photo-picker {
+  position: relative;
+  flex: 1;
+  min-width: 130px;
+  display: grid;
+  place-items: center;
+  padding: 15px 10px;
+  border: 1px dashed #6a8d73;
+  color: #d4e8da;
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-picker input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.photo-picker:focus-within {
+  outline: 2px solid #6aff83;
+  outline-offset: 3px;
+}
+
+.identity-preview {
+  margin: 0;
+}
+
+.identity-preview img {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  background: #040d0b;
+  border: 1px solid #2a3a31;
+}
+
+.identity-preview figcaption {
+  margin: 8px 0;
+  color: #9bac9f;
+  font-size: 11px;
+}
+
+.profile-setup-form .verification-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #b0c5b7;
+  font: 12px/1.7 Manrope,
+    sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.verification-consent input[type="checkbox"] {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  margin: 3px 0 0;
+  padding: 0;
+  accent-color: #6aff83;
+}
+
+.verification-progress {
+  margin: 0 0 28px;
+}
+
+.verification-progress ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.verification-progress li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-align: center;
+}
+
+.verification-progress li:not(:last-child)::after {
+  position: absolute;
+  top: 19px;
+  left: calc(50% + 26px);
+  right: calc(-50% + 26px);
+  height: 3px;
+  border-radius: 2px;
+  background: #405348;
+  content: "";
+}
+
+.verification-progress li.is-complete::after {
+  background: #6aff83;
+}
+
+.verification-step-number {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #52695a;
+  border-radius: 50%;
+  color: #b0c5b7;
+  background: #0a1112;
+  font: 700 15px "DM Mono",
+    monospace;
+}
+
+.is-current .verification-step-number {
+  border-color: #6aff83;
+  background: #163622;
+  color: #8fff9f;
+  box-shadow: 0 0 0 4px rgba(106, 255, 131, 0.14);
+}
+
+.is-complete .verification-step-number {
+  border-color: #6aff83;
+  background: #6aff83;
+  color: #07100e;
+}
+
+.verification-step-label {
+  color: #a6b9ad;
+  font: 800 12px/1.5 Manrope,
+    sans-serif;
+  padding: 0 3px;
+  overflow-wrap: anywhere;
+}
+
+.is-current .verification-step-label, .is-complete .verification-step-label {
+  color: #effff3;
+}
+
+.verification-step-status {
+  display: block;
+  margin-top: 3px;
+  color: #71847a;
+  font-size: 9px;
+  font-weight: 400;
+}
+
+.is-current .verification-step-status {
+  color: #6aff83;
+}
+
+.verification-step-heading {
+  border-top: 1px solid #2a3a31;
+  padding-top: 23px;
+}
+
+.verification-step-heading > span {
+  color: #6aff83;
+  font: 10px "DM Mono",
+    monospace;
+  letter-spacing: 0.1em;
+}
+
+.verification-step-heading h2 {
+  margin: 8px 0;
+  color: #e9f0ed;
+  font: 600 24px/1.2 Manrope,
+    sans-serif;
+}
+
+.verification-step-heading h2:focus {
+  outline: none;
+}
+
+.verification-step-heading p {
+  margin: 0;
+  color: #84948c;
+  font: 12px/1.7 Manrope,
+    sans-serif;
+}
+
+.profile-setup-form fieldset {
+  border: 0;
+  padding: 0;
+}
+
+.verification-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.verification-step-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.verification-step-actions .profile-setup-submit {
+  flex: 1;
+  gap: 16px;
+}
+
+.profile-setup-shell--identification {
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+  padding: 16px;
+}
+
+.profile-setup-shell--identification .profile-setup-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 900px;
+  min-height: 0;
+  padding: 24px 32px;
+  overflow: hidden;
+}
+
+.profile-setup-shell--identification .section-index {
+  margin-bottom: 10px;
+}
+
+.profile-setup-shell--identification h1 {
+  font-size: 38px;
+}
+
+.profile-setup-shell--identification .profile-setup-intro {
+  margin: 10px 0 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-setup-shell--identification .verification-progress {
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+
+.profile-setup-shell--identification .profile-setup-form {
+  flex: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  gap: 14px;
+}
+
+.profile-setup-shell--identification .verification-step-heading {
+  flex-shrink: 0;
+  padding-top: 14px;
+}
+
+.profile-setup-shell--identification .verification-step-heading h2 {
+  margin: 5px 0;
+  font-size: 22px;
+}
+
+.profile-setup-shell--identification .verification-fields {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #496050 #0a1112;
+  padding: 3px 10px 3px 3px;
+}
+
+.profile-setup-shell--identification .profile-setup-form fieldset {
+  gap: 12px;
+  align-content: start;
+}
+
+.profile-setup-shell--identification .verification-help {
+  margin-bottom: 0;
+}
+
+.profile-setup-shell--identification .verification-notice {
+  margin-bottom: 0;
+  padding: 10px 12px;
+}
+
+.profile-setup-shell--identification .identity-preview img {
+  max-height: 160px;
+  max-height: clamp(96px, 20dvh, 160px);
+}
+
+.profile-setup-shell--identification .verification-step-actions {
+  flex-shrink: 0;
+  border-top: 1px solid #2a3a31;
+  padding-top: 12px;
+}
+
+.profile-setup-shell--identification .profile-setup-signout {
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+
+.profile-setup-shell--identification .profile-setup-error {
+  flex-shrink: 0;
+  max-height: 80px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.profile-setup-shell--identification
+  .profile-setup-panel
+  > :not(.profile-setup-form) {
+  flex-shrink: 0;
+}
+
+@media (max-height: 650px) {
+  .profile-setup-shell--identification .profile-setup-panel {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .profile-setup-shell--identification h1 {
+    font-size: 30px;
+  }
+
+  .profile-setup-shell--identification .profile-setup-intro {
+    margin: 6px 0 12px;
+  }
+
+  .profile-setup-shell--identification .verification-step-status {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .verification-step-label {
+    font-size: 11px;
+  }
+
+  .verification-step-actions {
+    gap: 8px;
+  }
+
+  .profile-setup-shell--identification {
+    padding: 10px;
+  }
+
+  .profile-setup-shell--identification .profile-setup-panel {
+    padding: 20px;
+  }
+}
+
+@media (max-height: 520px) {
+  .profile-setup-shell--identification .profile-setup-panel {
+    overflow-y: auto;
+  }
+
+  .profile-setup-shell--identification .profile-setup-form {
+    flex: none;
+    grid-template-rows: auto auto auto;
+  }
+
+  .profile-setup-shell--identification .verification-fields {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile-setup-page, .profile-setup-page.profile-setup-shell--identification {
+    display: block;
+    height: auto;
+    min-height: 100svh;
+    padding: 18px 18px 32px;
+  }
+
+  .profile-setup-page .profile-setup-panel,
+  .profile-setup-page.profile-setup-shell--identification .profile-setup-panel {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .profile-setup-page .profile-setup-form { grid-template-rows: auto auto auto; }
+  .profile-setup-page .profile-setup-form :is(input:not([type='checkbox']), select) { min-height: 46px; font-size: 16px; }
+  .profile-setup-page.profile-setup-shell--identification .verification-fields { overflow: visible; padding: 0; }
+  .profile-setup-page .photo-picker { min-height: 52px; }
+  .profile-setup-page .verification-step-actions .profile-setup-submit { min-height: 46px; }
+}
