@@ -10,7 +10,8 @@ export async function getCart(userId) {
   }
   const listingIds = (data || []).map((item) => item.listing_id);
   if (!listingIds.length) return [];
-  const { data: listings, error: listingError } = await supabase.from('listings').select('*').in('id', listingIds);
+  const { data: listings, error: listingError } = await supabase.from('listings').select('*')
+    .in('id', listingIds).eq('moderation_status', 'approved');
   if (listingError) {
     console.warn('Unable to load cart listings:', listingError.message);
     return;

@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/marketplace.css';
 import '../styles/MarketplaceIntro.css';
 
-export default function MarketplaceIntro({ onSell }) {
+export default function MarketplaceIntro({ onSell, listing, onViewListing }) {
   return (
     <section className="marketplace-intro" id="browse">
       <div className="intro-copy">
@@ -10,13 +10,12 @@ export default function MarketplaceIntro({ onSell }) {
           <span className="section-index">● MARKETPLACE / 01</span>
         </div>
         <h1>
-          Smart upgrades.
+          Your next upgrade
           <br />
-          <em>Lighter price.</em>
+          <em>starts here.</em>
         </h1>
         <p>
-          Pre-owned computer hardware, checked by people who know the
-          difference.
+          Find pre-owned hardware for your next build.
         </p>
         <div className="intro-actions">
           <a className="primary-action" href="#recent-deals">
@@ -27,6 +26,7 @@ export default function MarketplaceIntro({ onSell }) {
           </button>
         </div>
       </div>
+      {listing?.image_url && <button type="button" className="shop-featured-product" onClick={() => onViewListing(listing)} aria-label={`View ${listing.brand || ''} ${listing.model || 'featured hardware'}`}><img src={listing.image_url} alt="" /></button>}
       <div className="intro-stats">
         <div className="intro-stat">
           <span>STATUS</span>

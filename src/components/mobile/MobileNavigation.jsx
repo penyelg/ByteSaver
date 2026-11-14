@@ -22,7 +22,7 @@ export default function MobileNavigation({ screen, onBrowse, children }) {
   }, [screen]);
 
   return (
-    <div className={showTabs ? 'member-shell member-shell--tabs' : 'member-shell'}>
+    <div className={showTabs ? 'member-shell member-shell--tabs' : 'member-shell'} data-screen={screen}>
       {children}
       {showTabs && (
         <nav className="mobile-tabs" aria-label="Marketplace navigation">

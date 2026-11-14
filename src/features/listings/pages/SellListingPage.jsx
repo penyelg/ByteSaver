@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Check, ImagePlus, ShieldCheck } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../../lib/supabase'
 import { getProfile } from '../../account/services/profileService'
 import { isIdentityApproved } from '../../account/utils/verification'
@@ -9,6 +10,7 @@ import '../styles/SellListingPage.css';
 
 // Renders the sell page and manages the form used to create a hardware listing.
 export default function SellListingPage({ session, onBack }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     brand: "",
     model: "",
@@ -27,6 +29,13 @@ export default function SellListingPage({ session, onBack }) {
   const [selectedSpecs, setSelectedSpecs] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
+  const [step, setStep] = useState(0);
+
+  useEffect(() => () => { if (imagePreview) URL.revokeObjectURL(imagePreview); }, [imagePreview]);
+
+  useEffect(() => {
+    if (step > 0) document.getElementById('sell-step-title')?.focus();
+  }, [step]);
 
   // Load categories once, then load their spec definitions whenever the chosen category changes.
   useEffect(() => {
@@ -122,6 +131,11 @@ export default function SellListingPage({ session, onBack }) {
     if (!supabase) return setNotice("Supabase is not configured.");
     const selectedCategory = categories.find((category) => category.name === form.category);
     if (!selectedCategory) return setNotice("Choose an available category before saving.");
+    if (!form.image) { setStep(0); return setNotice('Add a product photo.'); }
+    if (!form.brand.trim() || !form.model.trim() || !form.description.trim() || !Number.isFinite(Number(form.price)) || Number(form.price) <= 0 || selectedSpecs.some((spec) => spec.is_required && !String(specs[spec.spec_key] || '').trim())) {
+      setStep(1);
+      return setNotice('Complete the required item details before submitting.');
+    }
 
     // Convert number inputs to JSON numbers and omit blank optional fields before saving.
     const listingSpecs = Object.fromEntries(
@@ -170,7 +184,7 @@ export default function SellListingPage({ session, onBack }) {
         specs: listingSpecs,
       });
       if (error) throw error;
-      onBack();
+      navigate('/listings/manage', { state: { listingSubmitted: true }, replace: true });
     } catch (error) {
       setNotice(`Unable to save listing: ${error.message}`);
     } finally {
@@ -187,27 +201,36 @@ export default function SellListingPage({ session, onBack }) {
       <section className="sell-page-panel">
         <div className="sell-page-heading">
           <div>
-            <span className="section-index">MARKETPLACE / 02</span>
-            <h1>List your hardware.</h1>
-            <p>Give your gear a better second life.</p>
+            <h1 id="sell-step-title" tabIndex={-1}>{['Sell an item', 'Item details', 'Review your listing'][step]}</h1>
+            <p>{['Start with a clear photo of your hardware.', 'Help buyers find the right upgrade.', 'Check everything before submitting.'][step]}</p>
           </div>
           <span className="sell-page-status">● READY TO LIST</span>
         </div>
-        <div className="sell-page-intro">Complete the details below so buyers can understand exactly what they are getting.</div>
+        <ol className="shop-form-steps" aria-label="Listing progress">{['Photo', 'Details', 'Review'].map((label, index) => <li key={label} aria-current={step === index ? 'step' : undefined} data-complete={step > index}><span>{step > index ? <Check aria-hidden="true" /> : index + 1}</span>{label}</li>)}</ol>
         {notice && (
-          <div className="sell-notice sell-notice--error">{notice}</div>
+          <div className="sell-notice sell-notice--error" role="alert">{notice}</div>
         )}
-        <form className="listing-form" onSubmit={saveListing}>
-          <label className="listing-form-wide">
-            Product photo
+        <form className="listing-form shop-listing-wizard" onSubmit={(event) => {
+          if (step < 2) { event.preventDefault(); setNotice(''); setStep((current) => current + 1); }
+          else saveListing(event);
+        }}>
+          <fieldset className="shop-form-stage" hidden={step !== 0} disabled={step !== 0 || saving}>
+          <legend className="shop-sr-only">Product photo</legend>
+          <label className="listing-form-wide shop-photo-upload">
+            <ImagePlus aria-hidden="true" />
+            <strong>{imagePreview ? 'Change product photo' : 'Add a product photo'}</strong>
             <input name="image" type="file" accept="image/*" onChange={updateForm} required />
-            <small>Choose one clear photo of the component.</small>
+            <small>Use a clear, well-lit photo of the actual component.</small>
           </label>
           {imagePreview && (
             <div className="image-preview listing-form-wide">
               <img src={imagePreview} alt="Selected product preview" />
             </div>
           )}
+          <p className="shop-help listing-form-wide">Show the condition clearly. You can describe any wear and included accessories in the next step.</p>
+          </fieldset>
+          <fieldset className="shop-form-stage" hidden={step !== 1} disabled={step !== 1 || saving}>
+          <legend className="shop-sr-only">Item details</legend>
           <label>
             Brand
             <input
@@ -296,10 +319,21 @@ export default function SellListingPage({ session, onBack }) {
               placeholder="Describe usage, testing, included accessories, and flaws."
             />
           </label>
-          <p className="listing-form-wide">By publishing, you agree to accept paid reservations and share your profile phone number with the buyer during their confirmed hold. The buyer pays the item price directly to you.</p>
-          <button className="publish-button" type="submit" disabled={saving || loadingCategories || loadingSpecs || categories.length === 0}>
-            {loadingCategories ? "LOADING CATEGORIES…" : loadingSpecs ? "LOADING SPECS…" : saving ? "SAVING…" : "PUBLISH LISTING ↗"}
-          </button>
+          </fieldset>
+          {step === 2 && <div className="shop-listing-review listing-form-wide">
+            <img src={imagePreview} alt={`${form.brand} ${form.model}`} />
+            <h2>{form.brand} {form.model}</h2><strong className="shop-review-price">₱{Number(form.price).toLocaleString('en-PH')}</strong>
+            <dl className="shop-costs"><div><dt>Category</dt><dd>{form.category}</dd></div><div><dt>Condition</dt><dd>{form.condition}</dd></div>{selectedSpecs.filter((spec) => specs[spec.spec_key]).map((spec) => <div key={spec.spec_key}><dt>{spec.label}</dt><dd>{specs[spec.spec_key]}</dd></div>)}</dl>
+            <p className="shop-review-description">{form.description}</p>
+            <div className="shop-review-notice"><ShieldCheck aria-hidden="true" /><p><strong>Ready for review</strong>An administrator will check your listing before it appears in Browse.</p></div>
+            <p className="shop-help">By submitting, you accept paid reservations and share your profile phone number with the buyer during their confirmed hold. The buyer pays the item price directly to you.</p>
+          </div>}
+          <div className="shop-form-actions listing-form-wide">
+            {step > 0 && <button className="shop-secondary" type="button" disabled={saving} onClick={() => { setNotice(''); setStep((current) => current - 1); }}>Back</button>}
+            <button key={step} className="publish-button" type="submit" disabled={saving || loadingCategories || loadingSpecs || categories.length === 0}>
+              {loadingCategories ? 'Loading categories…' : loadingSpecs ? 'Loading specs…' : saving ? 'Submitting…' : ['Continue', 'Review listing', 'Submit for approval'][step]}
+            </button>
+          </div>
         </form>
       </section>
     </main>

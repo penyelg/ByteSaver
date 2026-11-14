@@ -1,18 +1,25 @@
-import React from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import AuthForm from "../components/AuthForm";
 import AuthModeSwitch from "../components/AuthModeSwitch";
-import PixelSnow from "../../../components/visuals/PixelSnow";
 import BrandPanel from "../../../components/brand/BrandPanel";
 import '../styles/AuthPage.css';
+const PixelSnow = lazy(() => import('../../../components/visuals/PixelSnow'));
 
 export default function AuthPage() {
   const [params] = useSearchParams();
   const mode = params.get("mode") === "register" ? "register" : "login";
+  const [showBackdrop, setShowBackdrop] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 801px) and (prefers-reduced-motion: no-preference)');
+    const update = () => setShowBackdrop(media.matches);
+    update(); media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   return (
     <main className="auth-shell">
-      <div className="pixel-snow-layer">
+      {showBackdrop && <Suspense fallback={null}><div className="pixel-snow-layer">
         <PixelSnow
           color="#00d736"
           flakeSize={0.014}
@@ -25,7 +32,7 @@ export default function AuthPage() {
           depthFade={8.5}
           farPlane={15}
         />
-      </div>
+      </div></Suspense>}
       <div className="auth-layout">
         <BrandPanel />
         <section
@@ -34,14 +41,11 @@ export default function AuthPage() {
         >
           <div className="form-wrap">
             <div className="form-heading">
-              <span className="section-index">
-                {mode === "login" ? "01" : "02"} / ACCOUNT
-              </span>
-              <h1>{mode === "login" ? "Welcome!" : "Create your account."}</h1>
+              <h1>{mode === "login" ? "Your next upgrade starts here." : "Join ByteSaver."}</h1>
               <p>
                 {mode === "login"
                   ? "Sign in to browse pre-owned hardware and manage your listings."
-                  : "Join a marketplace built for better hardware decisions."}
+                  : "One account to buy and sell pre-owned hardware."}
               </p>
             </div>
             <AuthModeSwitch mode={mode} />

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../../../lib/supabase";
+import { ShieldAlert } from 'lucide-react';
+import { MobileBrand } from '../../../components/mobile/MobileNavigation';
 import '../styles/account.css';
 import '../styles/AccountSuspendedPage.css';
 
@@ -27,7 +29,8 @@ export default function AccountSuspendedPage({ access, onRefresh }) {
   return (
     <main className="profile-setup-shell account-suspended-page">
       <section className="profile-setup-panel">
-        <span className="section-index">ACCOUNT ACCESS / SUSPENDED</span>
+        <MobileBrand />
+        <ShieldAlert className="shop-status-icon shop-status-icon--restricted" aria-hidden="true" />
         <h1>Your account is suspended.</h1>
         <p className="profile-setup-intro">
           Marketplace access is paused. Your verification record and saved items

@@ -34,7 +34,7 @@ export function filterListings(listings, { query, activeCategory, selectedCondit
       "",
     );
 
-    const searchable = `${title} ${description} ${category}`.toLowerCase();
+    const searchable = `${title} ${listing.brand || ''} ${listing.model || ''} ${description} ${category}`.toLowerCase();
     const matchesQuery = searchable.includes(query.toLowerCase());
     const matchesCategory =
       activeCategory === "All hardware" ||

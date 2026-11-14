@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './app/App'
 import faviconUrl from './assets/bytesaver-mark-transparent.png'
 import './styles/global.css'
+import './styles/mobileShop.css'
 
 const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link')
 favicon.rel = 'icon'

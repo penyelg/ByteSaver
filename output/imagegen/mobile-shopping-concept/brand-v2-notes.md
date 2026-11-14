@@ -1,0 +1,10 @@
+# Logo-matched mobile concept, v2
+
+Edited using the built-in ImageGen tool, with the official user-supplied logo as the color reference. All three original boards are retained. New images: 01-shopping-brand-v2.png, 02-selling-reservations-brand-v2.png, 03-account-verification-brand-v2.png.
+
+Suggested implementation palette: brand green approximately #71E681, background #101713, raised surface #1B2720, main text #F5F7F5, secondary text #A7B5AC. Raster mockups are visual approximations; use the original logo asset in implementation. No application code changed.
+
+## Edit prompt used for each board
+
+Use case: precise-object-edit. Input image 1 is the existing mobile UI design board to edit. Input image 2 is the user's official ByteSaver logo and authoritative brand-color reference. Recolor the ENTIRE existing board to harmonize with that logo. Replace ALL yellow-lime/chartreuse accents in image 1 with the fresh medium-light green of the SAVER letters and arrows in image 2 (approximately #71E681; visually match the actual reference). Apply consistently to primary buttons, prices, active bottom-navigation icons and labels, selected tabs, steps, links, checks, outlines and decorative accent areas. Use deep neutral charcoal #101713 for app backgrounds, subtle raised dark surfaces #1B2720, clean white #F5F7F5 main text, soft gray-green #A7B5AC secondary text, dark charcoal text on green-filled buttons. Retain amber warning/pending and muted red suspended states, and Google's multicolor G. Preserve original layout, six screens, positions, sizes, spacing, readable wording, product photography, avatars, all interactions shown, external board titles and off-white presentation background. Keep the original 3 by 2 board composition fully visible. Where an app header currently shows a substitute ByteSaver wordmark, match the official logo typography/color treatment with white BYTE and fresh green SAVER, optionally compact official mark if space allows; don't force the tagline into tiny headers. No yellow-lime primary colors anywhere, no neon gradients/glows, no new screens or features. High-resolution polished UI mockup, crisp legible text.
+

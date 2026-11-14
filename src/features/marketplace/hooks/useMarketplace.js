@@ -1,39 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
+import { fetchMarketplacePage } from '../services/marketplaceService';
 
-export default function useMarketplace() {
-  const [listings, setListings] = useState([]);
+export default function useMarketplace(options) {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  // use for fetching the data from Supabase
+  const [result, setResult] = useState({ key: null, listings: [], total: 0, error: '', loading: true });
+  const [retry, setRetry] = useState(0);
+  const requestKey = JSON.stringify(options);
+  const previousFilters = useRef('');
+
+  // Fetch the category menu once, independently of the current result page.
   useEffect(() => {
-    let mounted = true;
-
-    const loadMarketplace = async () => {
-      if (!supabase) {
-        setError("Supabase is not configured.");
-        setLoading(false);
-        return;
-      }
-
-      const [listingResult, categoryResult] = await Promise.all([
-        supabase.rpc("browse_marketplace_listings"),
-        supabase.from("categories").select("*"),
-      ]);
-
-      if (!mounted) return;
-      if (listingResult.error) setError("Unable to load marketplace listings.");
-      else setListings(listingResult.data || []);
-      if (!categoryResult.error) setCategories(categoryResult.data || []);
-      setLoading(false);
-    };
-
-    loadMarketplace();
-    return () => {
-      mounted = false;
-    };
+    if (!supabase) return;
+    let active = true;
+    const controller = new AbortController();
+    supabase.from('categories').select('id, name').eq('is_active', true).order('name').abortSignal(controller.signal)
+      .then(({ data, error }) => { if (active && !error) setCategories(data || []); })
+      .catch(() => { /* The page supplies fallback categories. */ });
+    return () => { active = false; controller.abort(); };
   }, []);
 
-  return { listings, categories, loading, error };
+  useEffect(() => {
+    let active = true;
+    const controller = new AbortController();
+    const current = JSON.parse(requestKey);
+    const filterKey = JSON.stringify([current.query, current.maxPrice]);
+    const delay = previousFilters.current && previousFilters.current !== filterKey ? 250 : 0;
+    previousFilters.current = filterKey;
+    setResult((previous) => ({ ...previous, loading: true, error: '' }));
+    const timer = setTimeout(async () => {
+      try {
+        if (!supabase) throw new Error('Supabase is not configured.');
+        const { data, count, error } = await fetchMarketplacePage(supabase, current, controller.signal);
+        if (!active) return;
+        // Recover if a deletion/moderation decision removed the last page.
+        if (error?.code === 'PGRST103') {
+          setResult({ key: requestKey, listings: [], total: 0, loading: false, error: '' });
+          return;
+        }
+        if (error) throw error;
+        setResult({ key: requestKey, listings: data || [], total: count ?? 0, loading: false, error: '' });
+      } catch {
+        if (active) setResult({ key: requestKey, listings: [], total: 0, loading: false, error: 'Unable to load listings. Please try again.' });
+      }
+    }, delay);
+    return () => { active = false; clearTimeout(timer); controller.abort(); };
+  }, [requestKey, retry]);
+  return { ...result, categories, loading: result.loading || result.key !== requestKey, reload: () => setRetry((value) => value + 1) };
 }
