@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
+import { Check, Clock3 } from 'lucide-react';
+import { MobileBrand } from '../../../components/mobile/MobileNavigation';
 import '../styles/account.css';
 import '../styles/VerificationPendingPage.css';
 
@@ -23,9 +25,11 @@ export default function VerificationPendingPage({ verification, onRefresh, onRev
     return () => document.removeEventListener('visibilitychange', checkOnFocus);
   }, [onRefresh]);
   return <main className="profile-setup-shell verification-pending-page"><section className="profile-setup-panel">
-    <span className="section-index">ACCOUNT VERIFICATION / PENDING</span>
-    <h1>Your ID is in review.</h1>
+    <MobileBrand />
+    <Clock3 className="shop-status-icon" aria-hidden="true" />
+    <h1>Verification in progress</h1>
     <p className="profile-setup-intro">Your details were submitted successfully. An administrator will review your ID before your account can buy or sell.</p>
+    <ol className="shop-verification-timeline"><li><Check aria-hidden="true" /><div><strong>Profile completed</strong><span>Your personal details are saved.</span></div></li><li><Check aria-hidden="true" /><div><strong>ID submitted</strong><span>Your photo was received.</span></div></li><li><Clock3 aria-hidden="true" /><div><strong>Admin review</strong><span>Waiting for a decision.</span></div></li></ol>
     {verification.submitted_at && <p className="verification-help">Submitted {new Date(verification.submitted_at).toLocaleString()}</p>}
     <div className="verification-notice">You don’t need to submit again. Check your status here after the administrator reviews your account.</div>
     <p className="verification-help" role="status">{message}</p>

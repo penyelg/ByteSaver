@@ -109,3 +109,189 @@
     margin-left: 0;
   }
 }
+
+.admin-workspace .admin-identity-workspace .review-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-identity-queue,
+.admin-identity-workspace .review-detail {
+  min-width: 0;
+  border: 1px solid var(--admin-line);
+  border-radius: 6px;
+  background: var(--admin-surface);
+}
+
+.admin-identity-workspace .review-detail {
+  padding: clamp(14px, 2vw, 22px);
+  overflow-wrap: anywhere;
+}
+
+.admin-identity-queue .admin-table small {
+  display: block;
+  margin-top: 4px;
+  color: var(--admin-muted);
+}
+
+.admin-identity-queue .admin-table td,
+.admin-identity-queue .admin-table th {
+  padding-inline: 13px;
+}
+
+.admin-identity-queue .admin-identity-selected {
+  background: var(--admin-surface-raised);
+}
+
+.admin-identity-workspace .admin-empty {
+  min-height: 120px;
+}
+
+.admin-identity-applicant-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.admin-identity-applicant-heading h2 {
+  margin: 0;
+}
+
+.admin-workspace .admin-identity-workspace .review-detail dl {
+  margin-block: 0 12px;
+}
+
+.admin-identity-preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.admin-workspace .admin-identity-preview .review-photo {
+  width: auto;
+  max-width: 100%;
+  max-height: clamp(120px, 24vh, 190px);
+  margin: 0;
+}
+
+.admin-identity-photo-trigger {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.admin-identity-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: #08120caa;
+  opacity: 0;
+  transition: opacity 160ms ease-out;
+}
+
+.admin-identity-photo-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 13px 6px 6px;
+  border: 1px solid #52715c;
+  border-radius: 6px;
+  background: #122019;
+  color: #ecf7ef;
+  font: 700 13px Manrope, sans-serif;
+  letter-spacing: .015em;
+  transform: translateY(4px);
+  transition: transform 180ms ease-out;
+}
+
+.admin-identity-photo-label svg {
+  box-sizing: content-box;
+  padding: 7px;
+  border: 1px solid #3e654a;
+  border-radius: 4px;
+  background: #203b2a;
+  color: var(--admin-green);
+}
+
+.admin-identity-photo-trigger:is(:hover, :focus-visible) .admin-identity-photo-overlay {
+  opacity: 1;
+}
+
+.admin-identity-photo-trigger:is(:hover, :focus-visible) .admin-identity-photo-label {
+  transform: none;
+}
+
+@media (hover: none) {
+  .admin-identity-photo-overlay {
+    inset: auto 8px 8px auto;
+    background: transparent;
+    opacity: 1;
+  }
+
+  .admin-identity-photo-label {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-identity-photo-overlay,
+  .admin-identity-photo-label {
+    transition: none;
+    transform: none;
+  }
+}
+
+.admin-identity-photo-dialog {
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--admin-line);
+  border-radius: 8px;
+  background: var(--admin-surface);
+}
+
+.admin-identity-photo-dialog::backdrop {
+  background: #080e0bc2;
+  backdrop-filter: blur(6px);
+}
+
+.admin-identity-photo-frame {
+  position: relative;
+  padding: 50px 12px 12px;
+}
+
+.admin-identity-photo-frame button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 7px;
+}
+
+.admin-identity-photo-frame img {
+  display: block;
+  max-width: min(960px, calc(100vw - 52px));
+  max-height: calc(100dvh - 90px);
+  object-fit: contain;
+}
+
+.admin-identity-workspace .admin-review-form {
+  gap: 10px;
+}
+
+.admin-identity-workspace .admin-review-form textarea {
+  min-height: 64px;
+}
+
+@media (max-width: 1100px) {
+  .admin-workspace .admin-identity-workspace .review-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

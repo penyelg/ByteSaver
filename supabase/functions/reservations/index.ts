@@ -117,6 +117,7 @@ Deno.serve(async (request) => {
         .from("listings")
         .select("seller_id, price, reservation_contact_allowed")
         .eq("id", body.id)
+        .eq("moderation_status", "approved")
         .maybeSingle();
       if (listing.error) throw listing.error;
       if (!listing.data) return json({ error: "Listing unavailable." }, 404);

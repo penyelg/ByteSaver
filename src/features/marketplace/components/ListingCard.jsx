@@ -27,6 +27,7 @@ export default function ListingCard({ listing, onView }) {
     ["image_url", "image", "thumbnail_url"],
     "",
   );
+  
   const specSummary = Object.entries(
     listing.specs && typeof listing.specs === "object" ? listing.specs : {},
   )
@@ -34,6 +35,8 @@ export default function ListingCard({ listing, onView }) {
     .slice(0, 3)
     .map(([key, value]) => `${key.replaceAll("_", " ")}: ${value}`)
     .join("  ·  ");
+
+
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
@@ -41,7 +44,7 @@ export default function ListingCard({ listing, onView }) {
       <div className="listing-image">
         <span className="listing-condition-badge">{condition}</span>
         {imageUrl && !imageFailed ? (
-          <img src={imageUrl} alt="" onError={() => setImageFailed(true)} />
+          <img src={imageUrl} alt="" loading="lazy" decoding="async" onError={() => setImageFailed(true)} />
         ) : (
           <span className="listing-image-fallback">
             {category.slice(0, 3).toUpperCase()}
@@ -58,7 +61,7 @@ export default function ListingCard({ listing, onView }) {
               ? "PRICE ON REQUEST"
               : `₱${Number(price).toLocaleString()}`}
           </b>
-          <button type="button" onClick={onView}>
+          <button type="button" onClick={onView} aria-label={`View ${title}`}>
             VIEW ITEM ↗
           </button>
         </div>

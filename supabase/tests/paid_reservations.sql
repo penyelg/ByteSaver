@@ -1,4 +1,4 @@
--- Synthetic fixtures and payment events. Run after applying the paid-reservations migration.
+-- Synthetic fixtures and payment events. Run after applying all migrations.
 begin;
 do $$
 declare
@@ -7,6 +7,7 @@ declare
   outsider uuid := gen_random_uuid();
   hold uuid := gen_random_uuid();
   listing uuid;
+  listing_revision uuid;
   barangay uuid;
   member uuid;
   state jsonb;
@@ -22,8 +23,9 @@ begin
     values (member, 'Test Member', 'Test Street', '+639123456789', barangay, 'Passport',
       member::text || '/synthetic.jpg', 'approved', seller, now());
   end loop;
+  insert into bytesaver_private.administrators(user_id) values (outsider);
   insert into public.listings(seller_id, brand, model, category, price, condition)
-    values (seller, 'Test', 'GPU', 'GPU', 10000, 'Good') returning id into listing;
+    values (seller, 'Test', 'GPU', 'GPU', 10000, 'Good') returning id, moderation_revision into listing, listing_revision;
 
   if has_table_privilege('authenticated', 'public.listing_reservations', 'select')
     or has_function_privilege('authenticated', 'public.list_my_listing_reservations(uuid)', 'execute')
@@ -39,8 +41,62 @@ begin
 
   perform set_config('request.jwt.claim.sub', seller::text, true);
   set local role authenticated;
+  begin
+    perform public.admin_moderate_listing(listing, listing_revision, 'pending', 'approved', null);
+    raise exception 'Seller bypassed moderation.';
+  exception when insufficient_privilege then null;
+  end;
   update public.listings set description = 'Seller edit' where id = listing;
   if not found then raise exception 'Seller could not edit their own listing.'; end if;
+  reset role;
+
+  perform set_config('request.jwt.claim.sub', buyer::text, true);
+  set local role authenticated;
+  if exists (select 1 from public.listings where id = listing)
+    or exists (select 1 from public.browse_marketplace_listings() where id = listing) then
+    raise exception 'Buyer can see a pending listing.';
+  end if;
+  set local role service_role;
+  begin
+    perform public.start_listing_reservation(hold, listing, buyer, 10000, 100, 1440);
+    raise exception 'Buyer can reserve a pending listing.';
+  exception when raise_exception then
+    if sqlerrm <> 'This listing cannot be reserved.' then raise; end if;
+  end;
+  reset role;
+
+  perform set_config('request.jwt.claim.sub', outsider::text, true);
+  set local role authenticated;
+  begin
+    perform public.admin_moderate_listing(listing, listing_revision, 'pending', 'approved', null);
+    raise exception 'Admin approved a stale listing revision.';
+  exception when raise_exception then
+    if sqlerrm <> 'This listing changed. Refresh the queue and review it again.' then raise; end if;
+  end;
+  select moderation_revision into listing_revision from public.admin_listing_queue('pending') where id = listing;
+  perform public.admin_moderate_listing(listing, listing_revision, 'pending', 'rejected', 'Test rejection reason');
+  if not exists (select 1 from public.admin_listing_history(listing)
+    where status = 'rejected' and reviewed_by = outsider and reason = 'Test rejection reason') then
+    raise exception 'Moderation decision was not audited.';
+  end if;
+  select moderation_revision into listing_revision from public.admin_listing_queue('rejected') where id = listing;
+  perform public.admin_moderate_listing(listing, listing_revision, 'rejected', 'approved', null);
+  perform set_config('request.jwt.claim.sub', seller::text, true);
+  update public.listings set description = 'Revised after approval' where id = listing;
+  if not exists (select 1 from public.listings where id = listing and moderation_status = 'pending')
+    or exists (select 1 from public.browse_marketplace_listings() where id = listing) then
+    raise exception 'An approved listing edit did not return to review.';
+  end if;
+  perform set_config('request.jwt.claim.sub', outsider::text, true);
+  select moderation_revision into listing_revision from public.admin_listing_queue('pending') where id = listing;
+  perform public.admin_moderate_listing(listing, listing_revision, 'pending', 'approved', null);
+  select moderation_revision into listing_revision from public.admin_listing_queue('approved') where id = listing;
+  perform public.admin_moderate_listing(listing, listing_revision, 'approved', 'hidden', 'Test hide reason');
+  if exists (select 1 from public.browse_marketplace_listings() where id = listing) then
+    raise exception 'Hidden listing still appears in the marketplace.';
+  end if;
+  select moderation_revision into listing_revision from public.admin_listing_queue('hidden') where id = listing;
+  perform public.admin_moderate_listing(listing, listing_revision, 'hidden', 'approved', null);
   reset role;
 
   set local role service_role;

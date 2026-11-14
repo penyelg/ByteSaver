@@ -13,6 +13,10 @@ export function getIdentityPhoto(path) {
   return supabase.storage.from('identity-documents').createSignedUrl(path, 120);
 }
 
+export function getIdentityReviewAvatars(userIds) {
+  return supabase.rpc('identity_review_avatars', { p_user_ids: userIds });
+}
+
 export function getPendingRequests() {
   return supabase.from('identity_submissions').select('id, full_name, id_type, submitted_at')
     .eq('status', 'pending_review').order('submitted_at', { ascending: true }).limit(5);

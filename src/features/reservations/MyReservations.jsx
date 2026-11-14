@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ArrowLeft, MessageSquare, Phone, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Clock3, MessageSquare, Phone, RefreshCw } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { MobileBrand } from '../../components/mobile/MobileNavigation';
 import { peso, reservationDate, reservationRequest } from './reservationService';
@@ -62,7 +62,7 @@ export default function MyReservations({ onBack }) {
       <MobileBrand />
       <button className="back-button" type="button" onClick={onBack}><ArrowLeft aria-hidden="true" /> Back to marketplace</button>
       <div className="reservations-heading">
-        <h1>My Reservations</h1>
+        <div><h1>Reservations</h1><p className="shop-help">Keep track of your purchases and sales.</p></div>
         <button type="button" aria-label="Refresh reservations" disabled={busy} onClick={refresh}><RefreshCw aria-hidden="true" /></button>
       </div>
       <div className="reservation-views" role="group" aria-label="Reservation type">
@@ -74,9 +74,9 @@ export default function MyReservations({ onBack }) {
       {visibleRecords?.length === 0 && <p className="reservations-empty">{view === 'buying' ? 'You haven’t reserved any items yet.' : 'Your listings have no reservations yet.'}</p>}
       {visibleRecords?.map((record) => (
         <section className="details-section reservation-card" key={record.id}>
-          <h2>{record.item_name || 'Hardware listing'}</h2>
-          <span className="reservation-status" data-status={record.status}>{labels[record.status]}</span>
-          {['pending', 'reserved'].includes(record.status) && <p>Ends {reservationDate.format(new Date(record.expires_at))} (Philippine time)</p>}
+          <div className="shop-reservation-title"><h2>{record.item_name || 'Hardware listing'}</h2><span className="reservation-status" data-status={record.status}>{labels[record.status] || record.status}</span></div>
+          <strong className="shop-reservation-price">{peso.format(record.item_price)}</strong>
+          {['pending', 'reserved'].includes(record.status) && <p className="shop-reservation-expiry"><Clock3 aria-hidden="true" /> Ends {reservationDate.format(new Date(record.expires_at))} (Philippine time)</p>}
           <dl className="reservation-amounts">
             <div><dt>Reservation fee</dt><dd>{peso.format(record.fee)}</dd></div>
             <div><dt>{record.is_seller ? 'Item price · Buyer pays you' : 'Item price · Pay seller directly'}</dt><dd>{peso.format(record.item_price)}</dd></div>
@@ -92,7 +92,7 @@ export default function MyReservations({ onBack }) {
             </div>
           )}
           {record.is_seller && record.status === 'reserved' && (
-            <button className="details-add-cart" type="button" disabled={busy} onClick={() => markSold(record)}>Mark Sold</button>
+            <div className="shop-handover"><p><strong>Completed the handover?</strong>Confirm after receiving payment.</p><button className="details-add-cart" type="button" disabled={busy} onClick={() => markSold(record)}>Mark as sold</button></div>
           )}
         </section>
       ))}

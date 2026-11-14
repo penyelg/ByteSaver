@@ -22,7 +22,9 @@ admin/
 - `/admin`: overview with exact counts for pending submissions, approved accounts, rejected submissions, and all ID submissions. Rejected counts include historical attempts; they are not unique-user counts.
 - `/admin/verifications`: identity review queue, filters, private photo preview, approval/rejection, and decision history.
 - `/admin/users`: searchable account directory, verification/access filters, account details, and audited suspension/reactivation. See [user-management setup](user-management.md); the migration is applied to the connected project.
-- Listing navigation remains disabled and labeled “Soon.” Listing moderation is not implemented.
+- `/admin/listings`: listing review queue with photos, specifications, condition, and decision history. Admins can approve or reject submissions, hide approved listings, and restore hidden listings. Rejecting or hiding requires a seller-visible reason.
+
+The listing moderation migration treats existing listings as approved. New listings and changes to listing details enter review and cannot appear in marketplace browsing or start a new reservation until approved. Sellers can see the status and latest decision reason in **Manage Listings**. Existing checkouts and reservations can continue after a listing is hidden.
 
 `App.jsx` checks account access and administrator permission loaded from protected database functions before rendering the workspace. Non-administrators visiting an admin URL see an access-required message. Signed-out visitors must sign in first. The original overview required no schema changes; user management adds private access/audit tables, protected RPCs, and suspension enforcement through a separate migration.
 
@@ -41,4 +43,4 @@ $env:GOMAXPROCS = '2'
 node --v8-pool-size=1 --max-old-space-size=384 node_modules/vite/bin/vite.js build
 ```
 
-Deployments must return the SPA `index.html` for `/admin` and `/admin/verifications` so direct links and reloads work. No hosting configuration was changed.
+Deployments must return the SPA `index.html` for paths under `/admin` so direct links and reloads work. Apply the listing moderation migration before deploying the updated frontend and reservations Edge Function. The rollback-only `supabase/tests/paid_reservations.sql` exercise covers both moderation and reservation behavior.

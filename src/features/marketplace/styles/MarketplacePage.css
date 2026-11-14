@@ -2,6 +2,16 @@
 
 .mobile-browse-tools, .mobile-browse-title { display: none; }
 
+.browse-result-summary { margin: 12px 0; color: var(--shop-muted, #a7b5ac); font: 400 12px/1.6 Manrope, sans-serif; }
+.browse-toolbar { scroll-margin-top: 100px; }
+.browse-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 24px; margin-top: 24px; border-top: 1px solid var(--shop-border, #35483b); }
+.browse-pagination span { color: var(--shop-muted, #a7b5ac); font: 500 12px Manrope, sans-serif; font-variant-numeric: tabular-nums; }
+.browse-pagination button, .browse-retry { min-height: 44px; padding: 10px 16px; border: 1px solid var(--shop-border, #35483b); border-radius: 8px; background: var(--shop-surface, #1b2720); color: var(--shop-green, #71e681); font: 600 13px Manrope, sans-serif; cursor: pointer; }
+.browse-pagination button:disabled { opacity: .45; cursor: not-allowed; }
+.browse-pagination button:hover:not(:disabled), .browse-retry:hover { border-color: var(--shop-green, #71e681); }
+.browse-retry { display: block; margin: 16px auto 0; }
+@media (max-width: 800px) { .browse-toolbar { scroll-margin-top: 16px; } }
+
 .marketplace-shell {
   min-height: 100svh;
   background-color: #07100e;

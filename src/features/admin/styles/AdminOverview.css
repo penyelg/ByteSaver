@@ -1,244 +1,181 @@
-/* Overview metrics, pending-work layout, checklist, and workspace-tool cards. */
-
-.admin-metrics {
+.admin-overview {
+  --overview-muted: var(--admin-muted);
+  --overview-rule: var(--admin-line);
+  --overview-accent: #a3e6b5;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 26px;
-}
-
-.admin-metric {
-  min-width: 0;
-  padding: 21px 20px 18px;
-  border: 1px solid var(--admin-line);
-  border-radius: 5px;
-  background: #0e1a14;
-}
-
-.admin-metric-primary {
-  border-color: #3c6545;
-  background: linear-gradient(115deg, #18311f, #101e16);
-}
-
-.admin-metric > div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  color: #b6c9bc;
-  font-size: 10px;
-}
-
-.admin-metric svg {
-  color: #769b81;
-  flex-shrink: 0;
-}
-
-.admin-metric-primary svg, .admin-metric-primary > div {
-  color: #a1e7b1;
-}
-
-.admin-metric > strong {
-  display: block;
-  margin: 17px 0 10px;
-  font: 500 39px/1 'Barlow Condensed', sans-serif;
-}
-
-.admin-metric-primary > strong {
-  color: var(--admin-green);
-}
-
-.admin-metric small {
-  display: block;
-  color: #799482;
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-.admin-overview-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 285px;
-  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
+  gap: 24px;
 }
 
-.admin-checklist {
-  padding: 24px;
+.overview-inbox {
+  min-width: 0;
+  background: var(--admin-surface);
+  border: 1px solid var(--overview-rule);
+  border-radius: 8px;
 }
 
-.admin-checklist h2 {
-  max-width: 230px;
-  margin-top: 13px;
-  font-size: 20px;
-  line-height: 1.45;
+.overview-inbox header {
+  padding: 22px 24px 12px;
 }
 
-.admin-checklist ol {
-  display: grid;
-  gap: 22px;
-  margin: 27px 0;
+.overview-inbox h2 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -.025em;
+}
+
+.overview-inbox header p {
+  margin: 5px 0 0;
+  color: var(--overview-muted);
+  font-size: 13px;
+}
+
+.overview-rows {
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.admin-checklist li {
+.overview-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 24px;
+}
+
+.overview-rows li + li {
+  border-top: 1px solid var(--overview-rule);
+}
+
+.overview-row-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: #20372a;
+  color: var(--overview-accent);
+}
+
+.overview-row-icon[data-type="listing"] {
+  background: #382d1d;
+  color: #efcc8b;
+}
+
+.overview-row-name {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+
+.overview-row-name small,
+.overview-rows time {
+  color: var(--overview-muted);
+  font-size: 12px;
+}
+
+.overview-row-name small {
+  display: block;
+  margin-top: 3px;
+}
+
+.overview-row-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.overview-message {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 24px;
+  color: var(--overview-muted);
+  font-size: 13px;
+}
+
+.overview-queue-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-.admin-checklist li > span {
-  padding: 4px 0;
-  color: #669a74;
-  font: 9px 'DM Mono', monospace;
+.overview-queue-heading > div {
+  flex: 1;
+  min-width: 0;
 }
 
-.admin-checklist li strong {
-  color: #c7dbce;
-  font-size: 10px;
-  font-weight: 500;
-}
-
-.admin-checklist li p {
-  margin: 6px 0 0;
-  color: #7c9785;
-  font-size: 10px;
-  line-height: 1.8;
-}
-
-.admin-checklist .admin-primary-button {
-  width: 100%;
-  padding-inline: 10px;
-  font-size: 10px;
-}
-
-.admin-roadmap {
-  margin-top: 30px;
-}
-
-.admin-section-label {
-  display: flex;
-  justify-content: space-between;
+.overview-pending-count {
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 15px;
-}
-
-.admin-section-label h2 {
-  margin: 0;
-  color: #8da998;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid var(--overview-rule);
+  border-radius: 6px;
+  color: var(--overview-muted);
   font-size: 12px;
-  font-weight: 500;
-}
-
-.admin-section-label > span {
-  color: #607e6a;
-  font: 8px 'DM Mono', monospace;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-.admin-future-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+.overview-pending-count[data-has-pending="true"] {
+  border-color: #785a2d;
+  background: #392b18;
+  color: #ffdb91;
 }
 
-.admin-future-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 22px;
-  border: 1px dashed #2b3e32;
-  border-radius: 5px;
-  background: #0c1611;
-  color: #678673;
+.overview-pending-count strong {
+  font-size: 20px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
-.admin-future-card > svg {
-  flex-shrink: 0;
+@media (max-width: 440px) {
+  .overview-queue-heading .overview-row-action {
+    margin-left: auto;
+  }
 }
 
-.admin-future-card h3 {
-  margin: 0 0 8px;
-  color: #a9c0b0;
-  font-size: 11px;
-  font-weight: 500;
+.overview-row-action {
+  border: 0;
+  background: transparent;
+  color: var(--overview-accent);
+  font: 700 13px Manrope, sans-serif;
 }
 
-.admin-future-card p {
-  margin: 0;
-  color: #6d8978;
-  font-size: 10px;
-  line-height: 1.7;
+.overview-row-action:hover {
+  background: var(--admin-surface-raised);
 }
 
-.admin-future-card > span {
-  align-self: flex-start;
-  margin-left: auto;
-  padding: 4px 6px;
-  border: 1px solid #293d30;
-  border-radius: 3px;
-  color: #6d8b78;
-  font-size: 8px;
+.overview-users-link {
+  grid-column: 1 / -1;
+  justify-self: start;
 }
 
-@media (max-width: 1200px) {
-  .admin-overview-grid {
+@media (max-width: 1100px) {
+  .admin-overview {
     grid-template-columns: minmax(0, 1fr);
   }
-
-  .admin-checklist {
-    display: none;
-  }
-
-  .admin-metrics {
-    gap: 10px;
-  }
-
-  .admin-metric {
-    padding: 17px 14px;
-  }
-
-  .admin-future-card {
-    padding: 18px 14px;
-  }
 }
 
-@media (max-width: 850px) {
-  .admin-metrics {
-    grid-template-columns: repeat(2, minmax(0,1fr));
+@media (max-width: 600px) {
+  .overview-inbox header,
+  .overview-rows li {
+    padding-inline: 14px;
   }
 
-  .admin-future-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 650px) {
-  .admin-metric {
-    padding: 17px 13px;
+  .overview-rows li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 10px;
   }
 
-  .admin-metric > div {
-    font-size: 9px;
+  .overview-rows time {
+    grid-column: 1;
   }
 
-  .admin-metric small {
-    font-size: 9px;
-  }
-
-  .admin-section-label h2 {
-    font-size: 11px;
-    line-height: 1.8;
-  }
-}
-
-.admin-future-card > .admin-text-button {
-  margin-left: auto;
-}
-/* Preserve the mobile card-heading override after moving overview rules out of admin.css. */
-@media (max-width: 650px) {
-  .admin-checklist h2 {
-    font-size: 15px;
-  }
 }

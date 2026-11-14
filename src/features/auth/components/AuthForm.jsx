@@ -70,6 +70,8 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
+      <GoogleSignInButton onClick={signInWithGoogle} busy={busy} />
+      <div className="auth-divider"><span>OR</span></div>
       <form onSubmit={submit} noValidate>
       {mode === 'register' && (
         <label>DISPLAY NAME
@@ -112,8 +114,6 @@ export default function AuthForm({ mode }) {
       {notice && <div className={`notice notice--${notice.type}`} role="alert">{notice.text}</div>}
       <button className="submit-button" type="submit" disabled={busy}>{busy ? 'CONNECTING…' : mode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT'}<span>↗</span></button>
       </form>
-      <div className="auth-divider"><span>OR</span></div>
-      <GoogleSignInButton onClick={signInWithGoogle} busy={busy} />
     </>
   )
 }
