@@ -61,6 +61,7 @@ export default function useSession({ loadCart, clearCart }) {
     setProfile(updatedProfile);
     setProfileError('');
   };
+
   const refreshProfile = useCallback(async () => {
     const userId = currentUserId.current;
     if (!userId) return { error: { message: 'Please sign in again.' } };
@@ -75,6 +76,7 @@ export default function useSession({ loadCart, clearCart }) {
     }
     return result;
   }, [loadCart, clearCart]);
+  
   useEffect(() => {
     if (!session?.user?.id) return;
     const checkAccess = () => { if (document.visibilityState === 'visible') void refreshProfile(); };

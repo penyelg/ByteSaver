@@ -6,6 +6,7 @@ export const ID_TYPES = [
   "UMID",
   "Other government-issued ID",
 ];
+
 export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 // Normalize local and international Philippine mobile formats; return null for invalid input.
@@ -27,6 +28,7 @@ export function validateIdentityPhoto(file) {
 
   return "";
 }
+
 // Buying and selling eligibility depends on both ID approval and account access.
 export function isIdentityApproved(profile) {
   return (

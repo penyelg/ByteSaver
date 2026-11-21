@@ -1,23 +1,19 @@
 import { supabase } from '../../../lib/supabase';
+import { LISTING_DISPLAY_FIELDS } from '../../listings/listingFields';
 
 // undefined preserves the previous cart on a failed read; [] represents an empty cart.
 export async function getCart(userId) {
   if (!supabase || !userId) return;
-  const { data, error } = await supabase.from('cart_items').select('id, listing_id, quantity').eq('user_id', userId).order('created_at', { ascending: true });
+  // The inner join omits missing, RLS-hidden, and unapproved listings in one request.
+  const { data, error } = await supabase.from('cart_items')
+    .select(`id, listing_id, quantity, listing:listings!cart_items_listing_id_fkey!inner(${LISTING_DISPLAY_FIELDS})`)
+    .eq('user_id', userId).eq('listing.moderation_status', 'approved')
+    .order('created_at', { ascending: true }).order('id', { ascending: true });
   if (error) {
     console.warn('Unable to load cart:', error.message);
     return;
   }
-  const listingIds = (data || []).map((item) => item.listing_id);
-  if (!listingIds.length) return [];
-  const { data: listings, error: listingError } = await supabase.from('listings').select('*')
-    .in('id', listingIds).eq('moderation_status', 'approved');
-  if (listingError) {
-    console.warn('Unable to load cart listings:', listingError.message);
-    return;
-  }
-  const listingMap = new Map((listings || []).map((listing) => [listing.id, listing]));
-  return (data || []).filter((item) => listingMap.has(item.listing_id)).map((item) => ({ ...item, listing: listingMap.get(item.listing_id) }));
+  return data || [];
 }
 
 export function insertCartItem(userId, listingId) {

@@ -1,3 +1,5 @@
+import { LISTING_DISPLAY_FIELDS } from '../../listings/listingFields';
+
 export const BROWSE_PAGE_SIZE = 10;
 
 // Quote PostgREST values separately from escaping SQL LIKE wildcards.
@@ -8,7 +10,9 @@ function containsPattern(value) {
 
 export function fetchMarketplacePage(client, { page, query, activeCategory, sortBy, selectedConditions, maxPrice }, signal) {
   // Preserve the RPC's approval, reservation visibility, and caller RLS checks.
-  let request = client.rpc('browse_marketplace_listings', {}, { count: 'exact' }).lte('price', maxPrice);
+  let request = client.rpc('browse_marketplace_listings', {}, { count: 'exact' })
+    .select(LISTING_DISPLAY_FIELDS).lte('price', maxPrice);
+    
   if (activeCategory !== 'All hardware') request = request.eq('category', activeCategory);
   // Words can match separate fields, e.g. "MSI B550".
   for (const term of query.trim().split(/\s+/).filter(Boolean)) {
