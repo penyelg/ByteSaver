@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ChevronDown, Search, Users, RefreshCw, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, Users, RefreshCw, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import AdminProfileAvatar from '../components/AdminProfileAvatar';
 import { getIdentityReviewAvatars } from '../services/adminService';
@@ -41,6 +41,17 @@ export default function UserManagementPage({ session, onReview }) {
   const detailOpen = Boolean(selectedId);
 
   useEffect(() => {
+    const search = query.trim();
+    if (search === filters.search) return;
+    const timer = setTimeout(() => {
+      setFilters((current) => current.search === search
+        ? current
+        : { ...current, search, page: 1 });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query, filters.search]);
+
+  useEffect(() => {
     if (!detailOpen) return;
     const dialog = detailDialog.current;
     const opener = document.activeElement;
@@ -55,7 +66,7 @@ export default function UserManagementPage({ session, onReview }) {
 
   useEffect(() => {
     let active = true;
-    setLoading(true); setError(''); setResult({ users: [], total: 0 });
+    setLoading(true); setError('');
     getManagedUsers(filters).then(({ data, error: failure }) => {
       if (!active) return;
       if (failure) throw failure;
@@ -121,12 +132,12 @@ export default function UserManagementPage({ session, onReview }) {
     <div className="admin-card">
       <div className="admin-card-heading"><h2>Account directory</h2><button className="admin-secondary-button" type="button" disabled={loading || saving} onClick={() => setRevision((value) => value + 1)}><RefreshCw size={15} aria-hidden="true" />Refresh</button></div>
       <form className="admin-user-filters" onSubmit={(event) => { event.preventDefault(); setFilters((current) => ({ ...current, search: query.trim(), page: 1 })); setSelectedId(null); setNotice(''); }}>
-        <div className="admin-user-search"><label htmlFor="admin-user-search">Search accounts</label><div><input id="admin-user-search" ref={searchField} type="search" value={query} onChange={(event) => setQuery(event.target.value)} maxLength={150} placeholder="Name, email, or mobile number" disabled={saving} /><button className="admin-secondary-button" type="submit" disabled={saving}><Search size={16} aria-hidden="true" />Search</button></div></div>
+        <div className="admin-user-search"><label htmlFor="admin-user-search">Search accounts</label><div><input id="admin-user-search" ref={searchField} type="search" value={query} onChange={(event) => { setQuery(event.target.value); setSelectedId(null); setNotice(''); }} maxLength={150} placeholder="Name, email, or mobile number" disabled={saving} /></div></div>
         <label>Access<select name="access" value={filters.access} onChange={updateFilter} disabled={saving}><option value="all">All accounts</option><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
         <label>Verification<select name="verification" value={filters.verification} onChange={updateFilter} disabled={saving}><option value="all">All verification states</option>{['not_submitted', 'pending_review', 'approved', 'rejected'].map((status) => <option key={status} value={status}>{labels[status]}</option>)}</select></label>
       </form>
       {notice && <div className="admin-review-notice" role="status">{notice}</div>}
-      {error ? <div className="admin-error" role="alert">{error}<button onClick={() => setRevision((value) => value + 1)}>Try again</button></div> : loading ? <div className="admin-empty" role="status">Loading accounts…</div> : result.users.length ? <div className="admin-table-scroll"><table className="admin-table admin-users-table">
+      {error ? <div className="admin-error" role="alert">{error}<button onClick={() => setRevision((value) => value + 1)}>Try again</button></div> : loading && result.users.length === 0 ? <div className="admin-empty" role="status">Loading accounts…</div> : result.users.length ? <div className="admin-table-scroll"><table className="admin-table admin-users-table">
         <thead><tr><th scope="col">Account</th><th scope="col">Verification</th><th scope="col">Access</th><th scope="col">Joined</th><th scope="col"><span className="admin-sr-only">Details</span></th></tr></thead>
         <tbody>{result.users.map((user) => <tr key={user.id} className={selectedId === user.id ? 'is-selected' : ''}>
           <td><div className="admin-applicant"><AdminProfileAvatar name={nameLabel(user)} url={avatars[user.id]} /><span><strong>{nameLabel(user)}{user.is_admin && <small className="admin-role-label">Administrator</small>}</strong><small>{user.email || 'No email'}{user.id === session.user.id ? ' · You' : ''}</small></span></div></td>
@@ -134,7 +145,7 @@ export default function UserManagementPage({ session, onReview }) {
           <td><button className="admin-secondary-button" type="button" aria-haspopup="dialog" disabled={saving} aria-label={`View ${nameLabel(user)}`} onClick={() => { setSelectedId(user.id); setNotice(''); }}>View account <ArrowRight size={15} aria-hidden="true" /></button></td>
         </tr>)}</tbody>
       </table></div> : <div className="admin-empty"><Users size={28} aria-hidden="true" /><h3>No accounts found.</h3><p>Try another search or change your filters.</p></div>}
-      <div className="admin-card-footer admin-user-pagination"><span role="status">{!loading && !error ? `${result.total} account${result.total === 1 ? '' : 's'} · Page ${filters.page} of ${Math.max(1, Math.ceil(result.total / pageSize))}` : 'Accounts directory'}</span><div><button className="admin-secondary-button" disabled={loading || saving || filters.page <= 1} onClick={() => setFilters((current) => ({ ...current, page: current.page - 1 }))}>Previous</button><button className="admin-secondary-button" disabled={loading || saving || filters.page * pageSize >= result.total} onClick={() => setFilters((current) => ({ ...current, page: current.page + 1 }))}>Next</button></div></div>
+      <div className="admin-card-footer admin-user-pagination"><span role="status">{!loading && !error ? `${result.total} account${result.total === 1 ? '' : 's'} · Page ${filters.page} of ${Math.max(1, Math.ceil(result.total / pageSize))}` : result.users.length ? `${result.total} account${result.total === 1 ? '' : 's'} · Updating results` : 'Accounts directory'}</span><div><button className="admin-secondary-button" disabled={loading || saving || filters.page <= 1} onClick={() => setFilters((current) => ({ ...current, page: current.page - 1 }))}>Previous</button><button className="admin-secondary-button" disabled={loading || saving || filters.page * pageSize >= result.total} onClick={() => setFilters((current) => ({ ...current, page: current.page + 1 }))}>Next</button></div></div>
     </div>
 
     {detailOpen && <dialog ref={detailDialog} className="admin-user-dialog" aria-labelledby="admin-account-title"
